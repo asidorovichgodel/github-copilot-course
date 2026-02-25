@@ -5,18 +5,28 @@ import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { loginSchema, type LoginFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { FormError } from '@/components/ui/form-field';
 
 /**
  * Login form component using React Hook Form with Zod validation.
- * Demonstrates modern form handling in Next.js:
- * - Use React Hook Form for form state management
- * - Zod resolver for validation
- * - Reusable FormField components for consistent styling
- * - Minimal re-renders and clean code
+ *
+ * WHY THIS DOES NOT USE A SERVER ACTION:
+ * Sign-in is handled by `signIn('credentials', ...)` from next-auth/react, which
+ * drives the full NextAuth session handshake internally:
+ *   1. Fetches a CSRF token from /api/auth/csrf
+ *   2. POSTs credentials to /api/auth/callback/credentials
+ *   3. NextAuth calls the `authorize()` callback in lib/auth.ts
+ *   4. On success, NextAuth sets the httpOnly session cookie from the server
+ *
+ * A server action cannot set the NextAuth session cookie or drive that CSRF +
+ * callback flow — only the [...nextauth] route handler can. Therefore the client
+ * must call `signIn()` directly, keeping this as a Client Component.
+ *
+ * Contrast with registration (sign-up/_actions.ts): registration only creates a
+ * DB record with no session involved, so it can be a plain server action.
  */
 
 export const LoginForm = () => {
@@ -27,7 +37,6 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
     reset,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -44,18 +53,14 @@ export const LoginForm = () => {
       });
 
       if (result?.error) {
-        setError('root', {
-          message: 'Login failed. Please try again.',
-        });
+        toast.error('Login failed. Please check your credentials and try again.');
         return;
       }
 
       reset();
       router.replace(callbackUrl);
     } catch (error) {
-      setError('root', {
-        message: error instanceof Error ? error.message : 'An error occurred',
-      });
+      toast.error(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
@@ -99,8 +104,6 @@ export const LoginForm = () => {
           <p className='text-xs text-destructive'>{errors.password.message}</p>
         ) : null}
       </div>
-
-      <FormError message={errors.root?.message} />
 
       <Button type='submit' className='w-full' disabled={isSubmitting}>
         {isSubmitting ? 'Signing in...' : 'Sign in'}

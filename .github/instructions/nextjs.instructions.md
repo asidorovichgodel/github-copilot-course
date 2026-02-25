@@ -124,7 +124,117 @@ Always move client-only UI into a Client Component and import it directly in you
 
 - **Do not call your own Route Handlers from Server Components** (e.g., `fetch('/api/...')`) just to reuse logic. Prefer extracting shared logic into modules (e.g., `lib/`) and calling it directly to avoid extra server hops.
 
-## 5. General Best Practices
+## 5. Forms
+
+### Stack
+
+Always use **React Hook Form** (`react-hook-form`) together with **Zod** (`zod`) and **`@hookform/resolvers/zod`** for all forms. Never build forms with `useState` per-field or manual validation.
+
+### Validation pattern (double-validation)
+
+Validation must run **twice** using the same Zod schema:
+
+1. **Client-side** — `zodResolver` wired into `useForm` gives instant per-field feedback.
+2. **Server-side** — the Server Action re-runs `schema.safeParse(data)` before touching the database. Never trust client input.
+
+### Schema location
+
+- Define Zod schemas in `lib/schemas/` and export the inferred `type` alongside each schema.
+- Reuse the exact same schema on both client (`zodResolver`) and server (Server Action).
+
+### Client Component pattern
+
+```tsx
+'use client';
+
+import { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { mySchema, type MyFormData } from '@/lib/schemas/mySchemas';
+import { myAction } from '@/app/_actions/myActions';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
+export function MyForm() {
+  const [isPending, startTransition] = useTransition();
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<MyFormData>({
+    resolver: zodResolver(mySchema),
+    defaultValues: { name: '', email: '' },
+  });
+
+  const onSubmit = (data: MyFormData) => {
+    startTransition(async () => {
+      try {
+        await myAction(data);
+      } catch (error) {
+        // Let Next.js handle its own redirect/notFound throws
+        if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
+          setError('root', { message: error.message || 'Something went wrong.' });
+        } else {
+          throw error;
+        }
+      }
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {errors.root && (
+        <p className="text-sm text-destructive">{errors.root.message}</p>
+      )}
+
+      <div className="space-y-1">
+        <label htmlFor="name" className="block text-sm font-medium">Name</label>
+        <Input id="name" disabled={isPending} {...register('name')} />
+        {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+      </div>
+
+      <Button type="submit" disabled={isPending}>
+        {isPending ? 'Saving…' : 'Submit'}
+      </Button>
+    </form>
+  );
+}
+```
+
+### Server Action pattern
+
+```ts
+'use server';
+
+import { mySchema, type MyFormData } from '@/lib/schemas/mySchemas';
+import { AppError } from '@/lib';
+
+// Accept the typed DTO — not raw FormData
+export async function myAction(data: MyFormData): Promise<void> {
+  // Re-validate server-side with the same schema
+  const parsed = mySchema.safeParse(data);
+  if (!parsed.success) {
+    throw AppError.validation(parsed.error.issues[0].message);
+  }
+
+  // ... call service / repository ...
+}
+```
+
+### Rules
+
+- **Use `useTransition` + `startTransition`** — not `useActionState` — when calling typed Server Actions from React Hook Form's `handleSubmit`.
+- **Expose field errors inline** directly below each input using `errors.<fieldName>.message`.
+- **Surface root/server errors** via `setError('root', { message })` in the catch block.
+- **Call `reset()`** on cancel to restore `defaultValues` and clear dirty state.
+- Roles or system-managed fields should be displayed read-only inside edit forms — never editable by the user themselves.
+- For complex inputs (checkboxes, selects, multi-select) use `<Controller control={control} name="..." render={...} />`.
+
+---
+
+## 6. General Best Practices
 
 - **TypeScript:** Use TypeScript for all code. Enable `strict` mode in `tsconfig.json`.
 - **ESLint & Prettier:** Enforce code style and linting. Use the official Next.js ESLint config. In Next.js 16, prefer running ESLint via the ESLint CLI (not `next lint`).
@@ -148,7 +258,7 @@ Always move client-only UI into a Client Component and import it directly in you
   - Write clear README and code comments.
   - Document public APIs and components.
 
-## 6. Caching & Revalidation (Next.js 16 Cache Components)
+## 7. Caching & Revalidation (Next.js 16 Cache Components)
 
 - **Prefer Cache Components for memoization/caching** in the App Router.
   - Enable in `next.config.*` via `cacheComponents: true`.
@@ -162,7 +272,7 @@ Always move client-only UI into a Client Component and import it directly in you
   - Use `updateTag(...)` inside **Server Actions** when you need “read-your-writes” / immediate consistency.
 - **Avoid `unstable_cache`** for new code; treat it as legacy and migrate toward Cache Components.
 
-## 7. Tooling updates (Next.js 16)
+## 8. Tooling updates (Next.js 16)
 
 - **Turbopack is the default dev bundler.** Configure via the top-level `turbopack` field in `next.config.*` (do not use the removed `experimental.turbo`).
 - **Typed routes are stable** via `typedRoutes` (TypeScript required).

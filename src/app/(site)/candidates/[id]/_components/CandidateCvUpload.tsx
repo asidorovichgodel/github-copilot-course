@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useState, type SyntheticEvent } from 'react';
+import { useRef, useState, useTransition, type SyntheticEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Upload } from 'lucide-react';
+import { uploadCv } from '@/app/_actions/cvActions';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,9 +25,9 @@ export function CandidateCvUpload({ candidateId, candidateName }: CandidateCvUpl
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleUpload = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const handleUpload = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!file) {
@@ -34,35 +35,24 @@ export function CandidateCvUpload({ candidateId, candidateName }: CandidateCvUpl
       return;
     }
 
-    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('candidateId', candidateId);
 
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('candidateId', candidateId);
+    startTransition(async () => {
+      try {
+        await uploadCv(formData);
 
-      const response = await fetch('/api/cv', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const payload = await response.json();
-
-      if (!response.ok) {
-        throw new Error(payload?.error || 'Upload failed. Please try again.');
+        toast.success(`CV for "${candidateName}" updated successfully.`);
+        setFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        router.refresh();
+      } catch (uploadError) {
+        const message =
+          uploadError instanceof Error ? uploadError.message : 'Unexpected error occurred.';
+        toast.error(message);
       }
-
-      toast.success(`CV for "${candidateName}" updated successfully.`);
-      setFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-      router.refresh();
-    } catch (uploadError) {
-      const message =
-        uploadError instanceof Error ? uploadError.message : 'Unexpected error occurred.';
-      toast.error(message);
-    } finally {
-      setIsUploading(false);
-    }
+    });
   };
 
   return (
@@ -82,18 +72,18 @@ export function CandidateCvUpload({ candidateId, candidateName }: CandidateCvUpl
             ref={fileInputRef}
             type="file"
             accept="application/pdf"
-            disabled={isUploading}
+            disabled={isPending}
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
           <div className="flex flex-wrap gap-3">
-            <Button type="submit" size="sm" disabled={!file || isUploading}>
-              {isUploading ? 'Processing…' : 'Upload & Update'}
+            <Button type="submit" size="sm" disabled={!file || isPending}>
+              {isPending ? 'Processing…' : 'Upload & Update'}
             </Button>
             <Button
               type="button"
               size="sm"
               variant="outline"
-              disabled={isUploading}
+              disabled={isPending}
               onClick={() => {
                 setFile(null);
                 if (fileInputRef.current) fileInputRef.current.value = '';

@@ -1,5 +1,14 @@
 import Link from 'next/link';
-import { ArrowUpRight, CheckCircle2, Command, ShieldCheck, Sparkles, Timer } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Briefcase,
+  FileText,
+  MapPin,
+  Trophy,
+  UserCheck,
+  Users,
+  Wrench,
+} from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,175 +16,273 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { requireAuth } from '@/lib/server/roleMiddleware';
+import { prisma } from '@/lib/server/prisma';
 
-const highlights = [
-  {
-    title: 'Comprehensive lessons',
-    description:
-      'Move from onboarding to advanced prompting with bite-sized, practical guidance.',
-  },
-  {
-    title: 'Practical examples',
-    description: 'See real-world scenarios for testing, refactors, and API design.',
-  },
-  {
-    title: 'Hands-on exercises',
-    description: 'Apply the skills immediately with structured practice workflows.',
-  },
-];
+export const metadata = {
+  title: 'Overview',
+};
 
-const outcomes = [
-  'Craft prompts that steer Copilot toward high-signal suggestions.',
-  'Speed up repetitive work without sacrificing quality or review standards.',
-  'Use Copilot Chat to debug, refactor, and document with confidence.',
-  'Assess security risks in AI-generated code before shipping.',
-  'Build repeatable workflows for team-wide adoption.',
-];
+/** Aggregate candidate statistics for the dashboard. */
+async function getCandidateStats() {
+  const [
+    totalCandidates,
+    candidatesWithLocation,
+    candidatesWithEmail,
+    recentCandidates,
+    allCandidates,
+  ] = await Promise.all([
+    prisma.candidate.count(),
+    prisma.candidate.count({ where: { location: { not: null } } }),
+    prisma.candidate.count({ where: { email: { not: null } } }),
+    prisma.candidate.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: { id: true, fullName: true, title: true, createdAt: true, skills: true },
+    }),
+    prisma.candidate.findMany({
+      select: {
+        skills: true,
+        technologies: true,
+        certifications: true,
+        experiences: { select: { company: true } },
+      },
+    }),
+  ]);
 
-export default function Home() {
+  // Count top skills across all candidates
+  const skillFrequency: Record<string, number> = {};
+  for (const c of allCandidates) {
+    for (const skill of c.skills) {
+      skillFrequency[skill] = (skillFrequency[skill] ?? 0) + 1;
+    }
+  }
+  const topSkills = Object.entries(skillFrequency)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([skill, count]) => ({ skill, count }));
+
+  // Count top technologies
+  const techFrequency: Record<string, number> = {};
+  for (const c of allCandidates) {
+    for (const tech of c.technologies) {
+      techFrequency[tech] = (techFrequency[tech] ?? 0) + 1;
+    }
+  }
+  const topTechnologies = Object.entries(techFrequency)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([tech, count]) => ({ tech, count }));
+
+  // Count unique companies from experiences
+  const companySet = new Set<string>();
+  for (const c of allCandidates) {
+    for (const exp of c.experiences) {
+      if (exp.company) companySet.add(exp.company);
+    }
+  }
+
+  // Total certifications
+  const totalCertifications = allCandidates.reduce(
+    (sum: number, c: { certifications: string[] }) => sum + c.certifications.length,
+    0,
+  );
+
+  return {
+    totalCandidates,
+    candidatesWithLocation,
+    candidatesWithEmail,
+    recentCandidates,
+    topSkills,
+    topTechnologies,
+    uniqueCompanies: companySet.size,
+    totalCertifications,
+  };
+}
+
+export default async function OverviewPage() {
+  await requireAuth();
+
+  const stats = await getCandidateStats();
+
+  const statCards = [
+    {
+      label: 'Total Candidates',
+      value: stats.totalCandidates,
+      icon: Users,
+      description: 'Profiles extracted from CVs',
+    },
+    {
+      label: 'With Location',
+      value: stats.candidatesWithLocation,
+      icon: MapPin,
+      description: `${stats.totalCandidates > 0 ? Math.round((stats.candidatesWithLocation / stats.totalCandidates) * 100) : 0}% of candidates`,
+    },
+    {
+      label: 'With Contact',
+      value: stats.candidatesWithEmail,
+      icon: UserCheck,
+      description: 'Have an email address',
+    },
+    {
+      label: 'Unique Companies',
+      value: stats.uniqueCompanies,
+      icon: Briefcase,
+      description: 'From work experience entries',
+    },
+    {
+      label: 'Certifications',
+      value: stats.totalCertifications,
+      icon: Trophy,
+      description: 'Across all candidates',
+    },
+  ];
+
   return (
-    <div className="space-y-12">
-      <section className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-6">
-          <Badge className="w-fit" variant="secondary">
-            Updated for 2026
-          </Badge>
-          <div className="space-y-4">
-            <h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
-              Master GitHub Copilot with a modern, hands-on course.
-            </h1>
-            <p className="text-lg text-muted-foreground md:text-xl">
-              Learn how to design prompts, review AI output, and ship features faster without
-              compromising quality.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link href="/lessons">
-                Start learning
-                <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <a
-                href="https://github.com/YOUR_USERNAME/github-copilot-course"
-                target="_blank"
-                rel="noreferrer"
-              >
-                View on GitHub
-              </a>
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Timer className="h-4 w-4" />
-              <span>10+ guided lessons</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" />
-              <span>Security-aware workflows</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Command className="h-4 w-4" />
-              <span>Prompting playbooks</span>
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Overview</h1>
+          <p className="mt-1 text-muted-foreground">
+            Candidate pipeline at a glance.
+          </p>
         </div>
+        <Button asChild>
+          <Link href="/candidates">
+            View all candidates
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
 
-        <Card className="border-muted/60 shadow-lg shadow-muted/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Sparkles className="h-5 w-5" />
-              Learning flight plan
-            </CardTitle>
-            <CardDescription>
-              A curated path that blends instruction, practice, and peer-review habits.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-3 rounded-xl border bg-background/60 p-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-semibold">Prompting fundamentals</span>
-                <Badge variant="secondary">Week 1</Badge>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-semibold">Copilot Chat workflows</span>
-                <Badge variant="secondary">Week 2</Badge>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-semibold">Security & QA readiness</span>
-                <Badge variant="secondary">Week 3</Badge>
-              </div>
-            </div>
-            <div className="rounded-xl border bg-muted/40 p-4 text-sm text-muted-foreground">
-              Pair each lesson with challenge prompts and review checklists to build confidence.
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button asChild variant="outline" className="w-full">
-              <Link href="/lessons">Browse the syllabus</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </section>
-
-      <section className="grid gap-6 md:grid-cols-3">
-        {highlights.map((item) => (
-          <Card key={item.title} className="border-muted/60">
-            <CardHeader>
-              <CardTitle>{item.title}</CardTitle>
-              <CardDescription>{item.description}</CardDescription>
+      {/* Stat cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {statCards.map(({ label, value, icon: Icon, description }) => (
+          <Card key={label}>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {label}
+              </CardTitle>
+              <Icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">{value}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+            </CardContent>
           </Card>
         ))}
-      </section>
+      </div>
 
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-4">
-          <h2 className="text-3xl font-semibold">What you will learn</h2>
-          <p className="text-muted-foreground">
-            Build a repeatable workflow to plan, prompt, and validate Copilot output across your
-            daily work.
-          </p>
-          <div className="grid gap-3">
-            {outcomes.map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-xl border bg-card p-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 text-primary" />
-                <span className="text-sm text-muted-foreground">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <Card className="border-muted/60">
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Recent candidates */}
+        <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Best practices toolkit</CardTitle>
-            <CardDescription>
-              Templates, checklists, and prompts that stay useful long after the course ends.
-            </CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Recent Candidates
+            </CardTitle>
+            <CardDescription>Latest profiles added to the pipeline</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-xl border bg-background/60 p-4">
-              <p className="text-sm font-semibold">Prompting checklist</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Clarify intent, add constraints, and include examples to guide Copilot faster.
+          <CardContent>
+            {stats.recentCandidates.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No candidates yet. Upload a CV to get started.
               </p>
-            </div>
-            <div className="rounded-xl border bg-background/60 p-4">
-              <p className="text-sm font-semibold">Review rubric</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Validate output for security, edge cases, and maintainability.
+            ) : (
+              <ul className="divide-y">
+                {stats.recentCandidates.map((c) => (
+                  <li key={c.id} className="flex items-center justify-between py-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{c.fullName}</p>
+                      <p className="truncate text-sm text-muted-foreground">
+                        {c.title ?? 'No title'}
+                      </p>
+                    </div>
+                    <div className="ml-4 flex shrink-0 items-center gap-3">
+                      <div className="hidden gap-1 sm:flex">
+                        {c.skills.slice(0, 2).map((skill) => (
+                          <Badge key={skill} variant="secondary" className="text-xs">
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                      <Button asChild variant="ghost" size="sm">
+                        <Link href={`/candidates/${c.id}`}>
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Top skills */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Wrench className="h-4 w-4" />
+              Top Skills
+            </CardTitle>
+            <CardDescription>Most common across all candidates</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {stats.topSkills.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No skill data available yet.
               </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {stats.topSkills.map(({ skill, count }) => (
+                  <Badge
+                    key={skill}
+                    variant="secondary"
+                    className="flex items-center gap-1 text-xs"
+                  >
+                    {skill}
+                    <span className="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      {count}
+                    </span>
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top technologies */}
+      {stats.topTechnologies.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Top Technologies</CardTitle>
+            <CardDescription>Most frequently listed technologies across candidates</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {stats.topTechnologies.map(({ tech, count }) => (
+                <div
+                  key={tech}
+                  className="flex items-center justify-between rounded-lg border px-3 py-2"
+                >
+                  <span className="truncate text-sm font-medium">{tech}</span>
+                  <Badge variant="outline" className="ml-2 shrink-0 text-xs">
+                    {count}
+                  </Badge>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
-      </section>
+      )}
     </div>
   );
 }
+
+

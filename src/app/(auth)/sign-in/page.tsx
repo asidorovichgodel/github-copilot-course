@@ -10,7 +10,7 @@ export default function SignInPage() {
           <div className='grid gap-2 text-center'>
             <h1 className='text-3xl font-semibold tracking-tight'>Sign in</h1>
             <p className='text-balance text-sm text-muted-foreground'>
-              Enter your email below to access your course progress.
+              Sign in to manage your candidate pipeline.
             </p>
           </div>
           <LoginForm />
@@ -25,7 +25,7 @@ export default function SignInPage() {
       <div className='hidden bg-muted lg:block'>
         <img
           src='/placeholder.svg'
-          alt='Course workspace'
+          alt='CV Manager workspace'
           className='h-full w-full object-cover dark:brightness-[0.2] dark:grayscale'
         />
       </div>

@@ -14,7 +14,6 @@ model User {
   lastName     String     @map("last_name")
   passwordHash String     @map("password_hash")
   roles        UserRole[]
-  cvs          CV[]
   candidate    Candidate?
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
@@ -38,20 +37,6 @@ model UserRole {
 
   @@id([userId, roleId])
   @@map("user_roles")
-}
-
-model CV {
-  id              String   @id @default(cuid()) @map("id")
-  userId          String   @map("user_id")
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fileName        String   @map("file_name")
-  filePath        String   @map("file_path")
-  extractedData   Json?    @map("extracted_data")
-  uploadedAt      DateTime @default(now()) @map("uploaded_at")
-  uploadedBy      String   @map("uploaded_by") // User ID of who uploaded it (can be admin)
-  updatedAt       DateTime @updatedAt @map("updated_at")
-
-  @@map("cvs")
 }
 
 // Candidate represents a person extracted from a CV - not necessarily a system user

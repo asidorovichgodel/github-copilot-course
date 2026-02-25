@@ -10,8 +10,8 @@ const sansFont = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans'
 const displayFont = Fraunces({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
-  title: 'GitHub Copilot Course',
-  description: 'A comprehensive course for learning GitHub Copilot and AI-assisted development',
+  title: 'CV Manager',
+  description: 'Manage candidate profiles extracted from uploaded CVs.',
 };
 
 export default function RootLayout({

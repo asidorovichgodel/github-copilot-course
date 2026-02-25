@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import {
   ArrowLeft,
+  BriefcaseBusiness,
   LayoutDashboard,
   Settings,
   ShieldCheck,
   Users,
-  WandSparkles,
 } from 'lucide-react';
 
 import {
@@ -52,7 +52,7 @@ export default async function AdminLayout({
             {/* Admin mode identity */}
             <div className="flex items-center gap-3">
               <div className="bg-destructive text-destructive-foreground flex h-11 w-11 items-center justify-center rounded-2xl">
-                <WandSparkles className="h-5 w-5" />
+                <BriefcaseBusiness className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -125,7 +125,7 @@ export default async function AdminLayout({
           </main>
 
           <footer className="border-t bg-background/80 py-6 text-center text-sm text-muted-foreground">
-            <p>© 2026 GitHub Copilot Course — Administrator Panel.</p>
+            <p>© 2026 CV Manager — Administrator Panel.</p>
           </footer>
         </SidebarInset>
       </SidebarProvider>

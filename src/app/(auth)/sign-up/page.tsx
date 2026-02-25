@@ -10,7 +10,7 @@ export default function SignUpPage() {
           <div className='grid gap-2 text-center'>
             <h1 className='text-3xl font-semibold tracking-tight'>Create account</h1>
             <p className='text-balance text-sm text-muted-foreground'>
-              Start your GitHub Copilot journey with guided lessons.
+              Create an account to start managing candidate profiles.
             </p>
           </div>
           <RegistrationForm />
@@ -25,7 +25,7 @@ export default function SignUpPage() {
       <div className='hidden bg-muted lg:block'>
         <img
           src='/placeholder.svg'
-          alt='Course workspace'
+          alt='CV Manager workspace'
           className='h-full w-full object-cover dark:brightness-[0.2] dark:grayscale'
         />
       </div>

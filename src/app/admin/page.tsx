@@ -11,7 +11,7 @@ export default async function AdminDashboard() {
 
   const totalUsers = await prisma.user.count();
   const totalRoles = await prisma.role.count();
-  const totalCVs = await prisma.cV.count();
+  const totalCVs = await prisma.candidateCv.count();
 
   const stats = [
     {

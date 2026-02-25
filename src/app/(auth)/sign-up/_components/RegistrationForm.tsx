@@ -3,10 +3,11 @@
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { userRegistrationSchema, type UserRegistrationFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { FormError } from '@/components/ui/form-field';
+import { registerUser } from '../_actions';
 
 /**
  * Registration form component using React Hook Form with Zod validation.
@@ -56,7 +57,6 @@ export const RegistrationForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
     reset,
   } = useForm<UserRegistrationFormData>({
     resolver: zodResolver(userRegistrationSchema),
@@ -65,25 +65,18 @@ export const RegistrationForm = () => {
 
   const onSubmit = async (data: UserRegistrationFormData) => {
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const result = await registerUser(data);
 
-      if (response.ok) {
-        reset();
-        router.replace('/');
-      } else {
-        const payload = await response.json().catch(() => null);
-        setError('root', {
-          message: payload?.error || 'Registration failed. Please try again.',
-        });
+      if (result.error) {
+        toast.error(result.error);
+        return;
       }
+
+      toast.success('Account created successfully!');
+      reset();
+      router.replace('/');
     } catch (error) {
-      setError('root', {
-        message: error instanceof Error ? error.message : 'An error occurred',
-      });
+      toast.error(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
@@ -107,8 +100,6 @@ export const RegistrationForm = () => {
           ) : null}
         </div>
       ))}
-
-      <FormError message={errors.root?.message} />
 
       <Button type='submit' className='w-full' disabled={isSubmitting}>
         {isSubmitting ? 'Creating account...' : 'Create account'}

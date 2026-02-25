@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ChangeEvent, type SyntheticEvent } from 'react';
+import { toast } from 'sonner';
 import { userRegistrationSchema, type UserRegistrationFormData } from '@/lib/schemas';
 import { validateFormData } from '@/lib/schemas/formValidation';
 import { Button } from '@/components/ui/button';
@@ -27,7 +28,6 @@ export const RegistrationForm = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,7 +43,6 @@ export const RegistrationForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrors({});
-    setSuccessMessage('');
 
     // Validate with Zod schema (includes password match check)
     const validation = validateFormData<UserRegistrationFormData>(
@@ -66,7 +65,7 @@ export const RegistrationForm = () => {
       });
 
       if (response.ok) {
-        setSuccessMessage('Registration successful! Redirecting to login...');
+        toast.success('Registration successful! Redirecting to login...');
         setFormData({
           firstName: '',
           lastName: '',
@@ -75,10 +74,10 @@ export const RegistrationForm = () => {
           confirmPassword: '',
         });
       } else {
-        setErrors({ form: 'Registration failed. Please try again.' });
+        toast.error('Registration failed. Please try again.');
       }
     } catch (error) {
-      setErrors({ form: error instanceof Error ? error.message : 'An error occurred' });
+      toast.error(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setIsSubmitting(false);
     }
@@ -137,9 +136,6 @@ export const RegistrationForm = () => {
           {errors[name] && <p className='text-red-500 text-sm mt-1'>{errors[name]}</p>}
         </div>
       ))}
-
-      {errors.form && <p className='text-red-500 text-sm text-center'>{errors.form}</p>}
-      {successMessage && <p className='text-green-600 text-sm text-center'>{successMessage}</p>}
 
       <Button type='submit' className='w-full' disabled={isSubmitting}>
         {isSubmitting ? 'Registering...' : 'Register'}

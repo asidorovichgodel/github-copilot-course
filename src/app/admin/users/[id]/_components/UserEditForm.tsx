@@ -5,6 +5,7 @@ import { useTransition } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -40,7 +41,6 @@ export const UserEditForm = ({ userId, defaultValues, roles }: UserEditFormProps
     handleSubmit,
     control,
     formState: { errors },
-    setError,
   } = useForm<UserEditFormData>({
     resolver: zodResolver(userEditSchema),
     defaultValues,
@@ -53,7 +53,7 @@ export const UserEditForm = ({ userId, defaultValues, roles }: UserEditFormProps
       } catch (error) {
         // redirect() throws internally — let Next.js handle it
         if (error instanceof Error && error.message !== 'NEXT_REDIRECT') {
-          setError('root', { message: error.message || 'Failed to save changes.' });
+          toast.error(error.message || 'Failed to save changes.');
         } else {
           throw error;
         }
@@ -156,11 +156,6 @@ export const UserEditForm = ({ userId, defaultValues, roles }: UserEditFormProps
           )}
         </CardContent>
       </Card>
-
-      {/* Root / server error */}
-      {errors.root && (
-        <p className="text-sm text-destructive">{errors.root.message}</p>
-      )}
 
       {/* Actions */}
       <div className="flex gap-3">

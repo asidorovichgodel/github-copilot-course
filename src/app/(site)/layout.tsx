@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import {
+  BriefcaseBusiness,
   FileText,
   LayoutDashboard,
   Settings,
-  Sparkles,
   UserSearch,
   Users,
-  WandSparkles,
 } from 'lucide-react';
 
 import {
@@ -34,15 +33,15 @@ import { UserNav } from './_components/UserNav';
 type NavItem = {
   href: string;
   label: string;
-  icon: typeof Sparkles;
+  icon: typeof LayoutDashboard;
   badge?: string;
 };
 
-const getNavItems = (): NavItem[] => [
-  { href: '/', label: 'Overview', icon: Sparkles },
+const getNavItems = (userIsAdmin: boolean): NavItem[] => [
+  { href: '/', label: 'Overview', icon: LayoutDashboard },
   { href: '/candidates', label: 'Candidates', icon: UserSearch },
-  { href: '/cv', label: 'CV Extraction', icon: FileText },
-  { href: '/admin/users', label: 'My Profile', icon: Users },
+  ...(userIsAdmin ? [{ href: '/cv', label: 'CV Extraction', icon: FileText }] : []),
+  { href: '/profile', label: 'My Profile', icon: Users },
 ];
 
 const adminNavItems: NavItem[] = [
@@ -58,7 +57,7 @@ export default async function SiteLayout({
 }>) {
   const session = await getServerSession(authOptions);
   const userIsAdmin = isAdmin(session?.user?.roles);
-  const navItems = getNavItems();
+  const navItems = getNavItems(userIsAdmin);
 
   return (
     <div className="relative min-h-screen">
@@ -68,11 +67,11 @@ export default async function SiteLayout({
           <SidebarHeader className="px-6 py-6">
             <div className="flex items-center gap-3">
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex h-11 w-11 items-center justify-center rounded-2xl">
-                <WandSparkles className="h-5 w-5" />
+                <BriefcaseBusiness className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-sidebar-foreground/60">Course</p>
-                <p className="text-lg font-semibold">GitHub Copilot</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-sidebar-foreground/60">Platform</p>
+                <p className="text-lg font-semibold">CV Manager</p>
               </div>
             </div>
           </SidebarHeader>
@@ -138,8 +137,8 @@ export default async function SiteLayout({
               <SidebarTrigger />
               <div className="flex flex-1 items-center">
                 <div>
-                  <p className="text-sm text-muted-foreground">GitHub Copilot Course</p>
-                  <p className="text-base font-semibold leading-tight">Ship better prompts</p>
+                  <p className="text-sm text-muted-foreground">CV Manager</p>
+                  <p className="text-base font-semibold leading-tight">Candidate pipeline</p>
                 </div>
               </div>
             </div>
@@ -150,7 +149,7 @@ export default async function SiteLayout({
           </main>
 
           <footer className="border-t bg-background/80 py-6 text-center text-sm text-muted-foreground">
-            <p>© 2026 GitHub Copilot Course. Licensed under MIT.</p>
+            <p>© 2026 CV Manager.</p>
           </footer>
         </SidebarInset>
       </SidebarProvider>
