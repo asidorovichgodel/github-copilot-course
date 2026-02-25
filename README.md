@@ -1,10 +1,21 @@
 # GitHub Copilot Course
 
-A comprehensive course for learning GitHub Copilot and AI-assisted development.
+A comprehensive course for learning GitHub Copilot and AI-assisted development through a real project build.
 
 ## 📚 About
 
 This repository contains resources, exercises, and examples for learning how to effectively use GitHub Copilot in your development workflow.
+The course project is a CV extraction app that turns uploaded PDFs into structured user profiles.
+
+## Project Idea: CV Extraction
+
+Core workflow:
+
+1. Admin uploads a CV in PDF format.
+2. The file is uploaded to the server (locally) via an API endpoint.
+3. The file is analyzed and structured with a Copilot-assisted extraction step.
+4. A user is created or updated from the extracted data (with conflict confirmation when needed).
+5. The UI shows success or failure to the admin.
 
 ## 🚀 Getting Started
 

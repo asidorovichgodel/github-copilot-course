@@ -5,68 +5,162 @@
  */
 
 import type { PaginatedResponse, PaginationParams } from '@/lib';
-import { AppError } from '@/lib';
+import { prisma } from '@/lib/server/prisma';
 
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  roles: string[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface CreateUserInput {
-  name: string;
+export interface AuthUser {
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  passwordHash: string;
+  roles: string[];
+}
+
+export interface CreateUserInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  passwordHash: string;
+  roles?: string[];
 }
 
 export interface UpdateUserInput {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
 }
 
+const mapUser = (user: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  roles: { role: { name: string } }[];
+  createdAt: Date;
+  updatedAt: Date;
+}): User => ({
+  id: user.id,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  email: user.email,
+  roles: user.roles.map((role) => role.role.name),
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+});
+
+const mapAuthUser = (user: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  passwordHash: string;
+  roles: { role: { name: string } }[];
+}): AuthUser => ({
+  id: user.id,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  email: user.email,
+  passwordHash: user.passwordHash,
+  roles: user.roles.map((role) => role.role.name),
+});
+
 export class UserRepository {
-  // Simulated database storage
-  private users: Map<string, User> = new Map();
-  private nextId = 1;
-
   async create(input: CreateUserInput): Promise<User> {
-    const id = `user_${this.nextId++}`;
-    const now = new Date();
+    const roles = input.roles?.length ? input.roles : ['user'];
 
-    const user: User = {
-      id,
-      name: input.name,
-      email: input.email,
-      createdAt: now,
-      updatedAt: now,
-    };
+    const user = await prisma.user.create({
+      data: {
+        email: input.email,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        passwordHash: input.passwordHash,
+        roles: {
+          create: roles.map((role) => ({
+            role: {
+              connectOrCreate: {
+                where: { name: role },
+                create: { name: role },
+              },
+            },
+          })),
+        },
+      },
+      include: {
+        roles: {
+          include: { role: true },
+        },
+      },
+    });
 
-    this.users.set(id, user);
-    return user;
+    return mapUser(user);
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.users.get(id) || null;
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        roles: {
+          include: { role: true },
+        },
+      },
+    });
+
+    return user ? mapUser(user) : null;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    for (const user of this.users.values()) {
-      if (user.email === email) {
-        return user;
-      }
-    }
-    return null;
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        roles: {
+          include: { role: true },
+        },
+      },
+    });
+
+    return user ? mapUser(user) : null;
+  }
+
+  async findAuthByEmail(email: string): Promise<AuthUser | null> {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        roles: {
+          include: { role: true },
+        },
+      },
+    });
+
+    return user ? mapAuthUser(user) : null;
   }
 
   async findAll(params: PaginationParams): Promise<PaginatedResponse<User>> {
-    const items = Array.from(this.users.values());
-    const total = items.length;
-    const start = (params.page - 1) * params.limit;
-    const end = start + params.limit;
+    const [items, total] = await Promise.all([
+      prisma.user.findMany({
+        skip: (params.page - 1) * params.limit,
+        take: params.limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          roles: {
+            include: { role: true },
+          },
+        },
+      }),
+      prisma.user.count(),
+    ]);
 
     return {
-      items: items.slice(start, end),
+      items: items.map(mapUser),
       total,
       page: params.page,
       limit: params.limit,
@@ -75,24 +169,49 @@ export class UserRepository {
   }
 
   async update(id: string, input: UpdateUserInput): Promise<User> {
-    const user = await this.findById(id);
+    const user = await prisma.user.update({
+      where: { id },
+      data: {
+        ...(input.firstName ? { firstName: input.firstName } : {}),
+        ...(input.lastName ? { lastName: input.lastName } : {}),
+        ...(input.email ? { email: input.email } : {}),
+      },
+      include: {
+        roles: {
+          include: { role: true },
+        },
+      },
+    });
 
-    if (!user) {
-      throw AppError.notFound('User not found');
-    }
-
-    const updated: User = {
-      ...user,
-      ...input,
-      updatedAt: new Date(),
-    };
-
-    this.users.set(id, updated);
-    return updated;
+    return mapUser(user);
   }
 
   async delete(id: string): Promise<void> {
-    this.users.delete(id);
+    await prisma.user.delete({ where: { id } });
+  }
+
+  /**
+   * Replace all roles for a user atomically.
+   * Deletes existing assignments and creates the new set in one transaction.
+   */
+  async updateRoles(id: string, roleIds: string[]): Promise<User> {
+    await prisma.$transaction([
+      prisma.userRole.deleteMany({ where: { userId: id } }),
+      ...(roleIds.length > 0
+        ? [
+            prisma.userRole.createMany({
+              data: roleIds.map((roleId) => ({ userId: id, roleId })),
+            }),
+          ]
+        : []),
+    ]);
+
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id },
+      include: { roles: { include: { role: true } } },
+    });
+
+    return mapUser(user);
   }
 }
 

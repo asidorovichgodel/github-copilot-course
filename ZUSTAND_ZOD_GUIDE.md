@@ -13,6 +13,13 @@ This guide explains how to use **Zustand** for state management and **Zod** for 
 
 ## Overview
 
+### Project Context: CV Extraction
+
+In this project, Zustand and Zod support the CV extraction workflow:
+
+- Zod validates the extracted profile data and conflict resolution payloads.
+- Zustand manages the admin review state across upload, review, and confirmation steps.
+
 ### Zustand
 A lightweight state management library that makes creating stores simple and predictable.
 

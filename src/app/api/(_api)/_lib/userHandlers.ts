@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { userService } from '@/_services';
 import { createSuccessResponse, validatePaginationParams } from '@/lib';
+import { userCreateSchema, userProfileSchema } from '@/lib/schemas';
 import { withErrorHandling } from '@/lib/server';
 import type { PaginationParams } from '@/lib';
 
@@ -42,7 +43,19 @@ export const getUserHandler = withErrorHandling(async (req: NextRequest) => {
 
 export const createUserHandler = withErrorHandling(async (req: NextRequest) => {
   const body = await req.json();
-  const user = await userService.createUser(body);
+  const parsed = userCreateSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { success: false, error: parsed.error.flatten().formErrors.join(', ') || 'Invalid input' },
+      { status: 400 }
+    );
+  }
+
+  const user = await userService.createUser({
+    ...parsed.data,
+    password: parsed.data.password,
+  });
   return NextResponse.json(createSuccessResponse(user), { status: 201 });
 });
 
@@ -57,7 +70,16 @@ export const updateUserHandler = withErrorHandling(async (req: NextRequest) => {
   }
 
   const body = await req.json();
-  const user = await userService.updateUser(id, body);
+  const parsed = userProfileSchema.partial().safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { success: false, error: parsed.error.flatten().formErrors.join(', ') || 'Invalid input' },
+      { status: 400 }
+    );
+  }
+
+  const user = await userService.updateUser(id, parsed.data);
   return NextResponse.json(createSuccessResponse(user));
 });
 

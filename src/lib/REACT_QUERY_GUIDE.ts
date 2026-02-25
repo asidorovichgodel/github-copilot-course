@@ -116,7 +116,7 @@ b) useUsers(page: number, limit: number)
      return (
        <div>
          {data?.data?.users?.map(user => (
-           <div key={user.id}>{user.name}</div>
+           <div key={user.id}>{user.firstName} {user.lastName}</div>
          ))}
        </div>
      )
@@ -159,11 +159,13 @@ a) useCreateUser()
    export function CreateUserForm() {
      const mutation = useCreateUser()
      
-     const handleCreate = async (name: string, email: string) => {
+     const handleCreate = async (firstName: string, lastName: string, email: string, password: string) => {
        try {
          const response = await mutation.mutateAsync({
-           name,
+           firstName,
+           lastName,
            email,
+           password,
          })
          console.log('Created:', response.data)
        } catch (error) {
@@ -174,7 +176,7 @@ a) useCreateUser()
      return (
        <form onSubmit={(e) => {
          e.preventDefault()
-         handleCreate('John', 'john@example.com')
+         handleCreate('John', 'Doe', 'john@example.com', 'Password1')
        }}>
          <button disabled={mutation.isPending}>
            {mutation.isPending ? 'Creating...' : 'Create'}
@@ -352,7 +354,7 @@ Example 1: Simple List Display
      return (
        <ul>
          {data?.data?.users?.map(user => (
-           <li key={user.id}>{user.name}</li>
+           <li key={user.id}>{user.firstName} {user.lastName}</li>
          ))}
        </ul>
      )
@@ -369,8 +371,8 @@ Example 2: Form with Mutation
      const [email, setEmail] = useState('')
      const mutation = useCreateUser()
      
-     const onSubmit = async (e: React.FormEvent) => {
-       e.preventDefault()
+     const onSubmit = async (event) => {
+       event.preventDefault()
        try {
          await mutation.mutateAsync({ name, email })
          setName('')

@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - .env.example template
 - Comprehensive README with setup instructions
 - Updated copilot-instructions.md with build commands and architecture guidelines
+- Project documentation updated to define the CV extraction workflow
 
 ### Changed
 - Updated README.md with detailed installation and usage instructions

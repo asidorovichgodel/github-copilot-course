@@ -13,6 +13,7 @@ This is a GitHub Copilot course repository focused on teaching effective AI-assi
 ## Quick Reference
 
 For detailed instructions by category, see:
+- [nextjs.instructions.md](nextjs.instructions.md) - Next.js best practices and patterns (App Router, caching, components)
 - [code-style.instructions.md](code-style.instructions.md) - Code formatting and style guidelines
 - [documentation.instructions.md](documentation.instructions.md) - Documentation standards
 - [testing.instructions.md](testing.instructions.md) - Testing patterns and practices
@@ -158,91 +159,23 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 - Use async/await over callbacks
 - 2-space indentation
 
-### Python
-- Follow PEP 8 guidelines
-- Use type hints
-- Prefer f-strings for formatting
-- 4-space indentation
-
 ### Markdown
 - Follow CommonMark spec
 - Use relative links for internal files
 - Always specify language for code blocks
 - Keep lines under 120 characters for readability
 
-## Common Tasks
-
-### Creating New Lessons
-- Start with clear learning objectives
-- Include practical examples
-- Add exercises for practice
-- Provide solution code with explanations
-
-### Writing Examples
-- Keep examples focused and minimal
-- Show both correct and incorrect approaches
-- Include comments explaining key concepts
-- Test all code before committing
-
-### Next.js App Router
-- Use **App Router** (app directory) for all routes
-- Leverage **Server Components** by default for better performance
-- Use `'use client'` directive only when needed (interactivity, hooks, browser APIs)
-- Implement **Server Actions** for form submissions and mutations
-- Use **Route Groups** for layout organization without affecting URL structure
-
-### Component Organization
-- **Server Components** (default): Data fetching, static content, SEO-critical content
-- **Client Components**: Interactive elements, state management, event handlers
-- **Shared Components**: Place in `src/components/` directory
-- **Page-specific Components**: Colocate with the page in the app directory
-
-### Data Fetching
-- Use `async` Server Components for data fetching
-- Implement `loading.tsx` for loading states
-- Use `error.tsx` for error boundaries
-- Cache data appropriately with Next.js caching strategies
-
-### State Management
-- Use React hooks (useState, useReducer) for local state
-- Context API for global state when needed
-- Server Actions for server mutations
-- URL state for shareable/bookmarkable state
-
-### File Naming Conventions
-- Pages: `page.tsx` (App Router convention)
-- Layouts: `layout.tsx` (App Router convention)
-- Components: `ComponentName.tsx` (PascalCase)
-- Utilities: `utilityName.ts` (camelCase)
-- Tests: `ComponentName.test.tsx` or `utilityName.test.ts`
-
-### Routing Patterns
-- `/` - Home page
-- `/lessons` - Lessons index
-- `/lessons/[slug]` - Individual lesson
-- `/exercises` - Exercises index
-- `/exercises/[slug]` - Individual exercise
-
-### Testing Strategies
-- **Unit Tests**: Individual components and utilities
-- **Integration Tests**: Component interactions and data flow
-- **E2E Tests**: Critical user journeys (to be added with Playwright)
-*To be updated as architecture emerges*
-
-### When Project Structure is Defined:
-- Routing patterns
-- State management approach
-- Data fetching strategies
-- Component/module organization
-- Testing strategies
+> **Note**: For Next.js-specific patterns (App Router, Server/Client Components, data fetching, caching, etc.), refer to [nextjs.instructions.md](nextjs.instructions.md)
 
 ## Conventions
 
 ### File Naming
 - Use `kebab-case` for general files: `lesson-01-intro.md`
-- Use `camelCase` for TypeScript/JavaScript: `userService.ts`
+- Use `PascalCase` for components: `UserCard.tsx`
+- Use `camelCase` for utilities/services: `userService.ts`
 - Use `snake_case` for Python: `user_service.py`
-- Test files: `*.test.ts` or `test_*.py`
+- Test files: `*.test.ts`, `*.test.tsx` or `test_*.py`
+- For Next.js-specific conventions (pages, layouts, etc.), see [nextjs.instructions.md](nextjs.instructions.md)
 
 ### Import Order
 1. External dependencies

@@ -3,6 +3,15 @@
 ## Overview
 React Query (@tanstack/react-query v5) has been successfully integrated into your Next.js project for seamless client-server communication via API.
 
+## Project Context: CV Extraction
+
+Planned usage for the CV extraction workflow:
+
+- Upload CV PDFs and track upload status.
+- Poll or subscribe to extraction status updates.
+- Fetch structured CV data for review and conflict resolution.
+- Submit confirmations to create or update users.
+
 ## What Was Installed
 
 ```bash

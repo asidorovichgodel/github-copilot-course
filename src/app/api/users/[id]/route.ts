@@ -23,6 +23,10 @@ export async function PUT(req: NextRequest) {
   return updateUserHandler(req);
 }
 
+export async function PATCH(req: NextRequest) {
+  return updateUserHandler(req);
+}
+
 export async function DELETE(req: NextRequest) {
   return deleteUserHandler(req);
 }

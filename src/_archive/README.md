@@ -9,6 +9,7 @@
  * - Use src/_services/ for business logic (private folder)
  * - Use src/_repositories/ for data access (private folder)
  * - Use src/app/api/(_api)/_lib/ for API handlers (colocated)
+ * - Support the CV extraction project workflow in current docs
  * 
  * For the current structure, see:
  * - PROJECT_STRUCTURE.md (quick reference)

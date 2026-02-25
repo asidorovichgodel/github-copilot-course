@@ -23,4 +23,6 @@
  * ├── _services/          # Private: Business logic
  * ├── _repositories/      # Private: Data access
  * └── app/api/(_api)/_lib/# API handlers
+ * 
+ * Current project context: CV extraction workflow documentation
  */

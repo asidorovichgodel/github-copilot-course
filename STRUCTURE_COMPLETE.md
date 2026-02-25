@@ -11,6 +11,16 @@
 
 The server-side scaffolding has been reorganized to follow **Vercel's official Next.js project structure** from their documentation at [nextjs.org/docs/app/getting-started/project-structure](https://nextjs.org/docs/app/getting-started/project-structure).
 
+## Project Idea: CV Extraction
+
+Core workflow:
+
+1. Admin uploads a CV in PDF format.
+2. The file is uploaded to the server (locally) via an API endpoint.
+3. The file is analyzed and structured with a Copilot-assisted extraction step.
+4. A user is created or updated from the extracted data (with conflict confirmation when needed).
+5. The UI shows success or failure to the admin.
+
 ### Key Changes
 
 | Before | After | Reason |

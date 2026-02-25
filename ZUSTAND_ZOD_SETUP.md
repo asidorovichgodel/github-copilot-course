@@ -4,6 +4,13 @@
 
 This document summarizes the Zustand and Zod integration added to the project following Next.js best practices.
 
+## Project Context: CV Extraction
+
+Planned usage in this project:
+
+- Use Zod to validate extracted CV data and conflict resolutions.
+- Use Zustand to manage multi-step review flows (upload, review, confirm).
+
 ## Installation
 
 ```bash
