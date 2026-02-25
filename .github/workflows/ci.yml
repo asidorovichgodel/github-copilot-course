@@ -1,0 +1,392 @@
+name: CI/CD Pipeline
+
+# ============================================================================
+# GitFlow CI/CD Pipeline
+#
+# Trigger matrix:
+#   push    → develop, main, release/*, hotfix/*
+#   PR      → develop (from feature/* or hotfix/*), main (from release/* or hotfix/*)
+#
+# Pipeline stages (in order of execution):
+#   1. install        – npm ci with dependency caching
+#   2. lint           – ESLint + Prettier (parallel with build & test)
+#   3. build          – Next.js production build
+#   4. unit-tests     – Jest (unit + RTL integration) with ≥ 80% coverage
+#   5. e2e-tests      – Playwright Chromium (depends on build)
+#   6. security       – npm audit (high+ severity fails build)
+#   7. deploy-staging – auto-deploy on develop push
+#   8. deploy-prod    – manual-approval deploy on main push
+# ============================================================================
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - 'release/**'
+      - 'hotfix/**'
+  pull_request:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  # One run per branch/PR at a time. Cancel in-flight runs when a new
+  # commit is pushed so stale CI results don't block merges.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Principle of least privilege — override per-job where write access is needed.
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  NODE_VERSION: 'lts/*' # Always resolves to the current Node.js LTS release
+
+# =============================================================================
+# Job: install
+# Purpose: warm the npm cache so all downstream jobs can run npm ci quickly
+# =============================================================================
+jobs:
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+  # =============================================================================
+  # Job: lint
+  # Purpose: enforce ESLint rules and Prettier formatting on JS/TS/JSX/TSX files
+  # =============================================================================
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    needs: install
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Run ESLint — covers .js, .jsx, .ts, .tsx (matches package.json "lint" script)
+      - name: Run ESLint
+        run: npm run lint
+
+      # Prettier dry-run — fails if any file differs from the formatted output
+      - name: Check Prettier formatting
+        run: npm run format:check
+
+  # =============================================================================
+  # Job: build
+  # Purpose: compile the Next.js application for production
+  # =============================================================================
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: install
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js application
+        run: npm run build
+
+      # Persist the build output for downstream jobs (e2e, deploy)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: |
+            .next/
+            public/
+          retention-days: 1
+
+  # =============================================================================
+  # Job: unit-tests
+  # Purpose: run Jest unit tests and React Testing Library integration tests
+  #          and enforce a global code coverage threshold of ≥ 80%
+  # =============================================================================
+  unit-tests:
+    name: Unit & Integration Tests (Jest + RTL)
+    runs-on: ubuntu-latest
+    needs: install
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Run Jest with coverage collection.
+      # The --coverageThreshold flag enforces the 80% quality gate across all
+      # coverage metrics (lines, statements, functions, branches).
+      - name: Run tests with coverage (≥ 80% threshold)
+        run: |
+          npm run test:coverage -- \
+            --coverageThreshold='{"global":{"lines":80,"statements":80,"functions":80,"branches":80}}' \
+            --ci \
+            --forceExit
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even if coverage threshold fails for inspection
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+  # =============================================================================
+  # Job: e2e-tests
+  # Purpose: run Playwright end-to-end tests in Chromium
+  #          Playwright's webServer config automatically starts `npm run dev`.
+  # =============================================================================
+  e2e-tests:
+    name: E2E Tests (Playwright / Chromium)
+    runs-on: ubuntu-latest
+    needs: build # Guard against running E2E when the build itself is broken
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Install Chromium + all system dependencies needed by Playwright on Ubuntu
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run e2e
+        env:
+          CI: 'true' # Disables reuseExistingServer — Playwright starts a fresh dev server
+
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v4
+        if: always() # Capture results even on test failure
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload failure screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-screenshots
+          path: test-results/
+          retention-days: 3
+
+  # =============================================================================
+  # Job: security
+  # Purpose: run npm audit to detect high/critical dependency vulnerabilities
+  # =============================================================================
+  security:
+    name: Security Scan (npm audit)
+    runs-on: ubuntu-latest
+    needs: install
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Fail the build on HIGH or CRITICAL severity vulnerabilities.
+      # Moderate/low issues are reported but do not block the pipeline.
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      # Always upload the full audit JSON for review in the Actions summary
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: npm-audit-report
+          path: npm-audit.json
+          retention-days: 7
+        continue-on-error: true # Artifact may not exist if audit errors before producing output
+
+  # =============================================================================
+  # Job: deploy-staging
+  # Purpose: deploy to the staging environment automatically when the develop
+  #          branch receives a push (all quality gates must pass first)
+  # =============================================================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, e2e-tests, security]
+    # Only run on direct pushes to develop — not on PRs or other branches
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    timeout-minutes: 20
+
+    # GitHub Environment enforces protection rules and exposes staging secrets
+    environment:
+      name: staging
+      url: ${{ vars.STAGING_URL }}
+
+    permissions:
+      contents: read
+      id-token: write # Required if using OIDC-based cloud authentication
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+
+      # ---------------------------------------------------------------------------
+      # Replace the placeholder below with your actual deployment mechanism,
+      # for example:
+      #   Vercel:  npx vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --target=preview
+      #   AWS:     aws s3 sync .next/ s3://staging-bucket/ ...
+      #   Docker:  docker build -t myapp:staging . && docker push ...
+      # ---------------------------------------------------------------------------
+      - name: Deploy to staging environment
+        run: |
+          echo "🚀 Deploying commit ${{ github.sha }} to staging..."
+          # INSERT YOUR DEPLOYMENT COMMAND HERE
+        env:
+          STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+
+      - name: Run smoke tests against staging
+        run: |
+          echo "✅ Running post-deploy smoke tests on ${{ vars.STAGING_URL }}..."
+          # INSERT SMOKE TEST COMMAND, e.g.: curl --fail ${{ vars.STAGING_URL }}/api/health
+
+  # =============================================================================
+  # Job: deploy-production
+  # Purpose: deploy to production when the main branch receives a push.
+  #          Requires a manual approval configured in the GitHub Environment.
+  # =============================================================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, e2e-tests, security]
+    # Only run on direct pushes to main — not on PRs
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 20
+
+    # GitHub Environment with required reviewers provides the manual approval gate
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+
+    permissions:
+      contents: read
+      id-token: write # Required if using OIDC-based cloud authentication
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+
+      # ---------------------------------------------------------------------------
+      # Replace the placeholder below with your actual production deployment.
+      # Consider blue/green or canary strategies for zero-downtime releases.
+      # ---------------------------------------------------------------------------
+      - name: Deploy to production environment
+        run: |
+          echo "🚀 Deploying commit ${{ github.sha }} to production..."
+          # INSERT YOUR DEPLOYMENT COMMAND HERE
+        env:
+          PRODUCTION_DEPLOY_TOKEN: ${{ secrets.PRODUCTION_DEPLOY_TOKEN }}
+
+      - name: Run post-deployment health check
+        run: |
+          echo "✅ Running post-deploy health checks on ${{ vars.PRODUCTION_URL }}..."
+          # INSERT HEALTH CHECK COMMAND, e.g.: curl --fail ${{ vars.PRODUCTION_URL }}/api/health
