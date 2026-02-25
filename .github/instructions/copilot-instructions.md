@@ -20,6 +20,8 @@ For detailed instructions by category, see:
 - [security.instructions.md](security.instructions.md) - Security best practices
 - [pr-review.instructions.md](pr-review.instructions.md) - PR creation and review guidelines
 
+> **Package Versions & API Docs**: Always use **Context7 MCP** (`use context7`) when installing, updating, or asking about any npm package. See [Package Management](#package-management) below.
+
 ## GitHub Copilot Customization
 
 This repository includes custom agents, instructions, and prompts to enhance the development experience.
@@ -65,6 +67,37 @@ Prompts are templates for common development tasks invoked with `#` in Copilot C
 - **Test Coverage**: `npm run test:coverage` - Generate test coverage report
 - **Audit**: `npm run audit` - Check for security vulnerabilities
 - **Audit Fix**: `npm run audit:fix` - Automatically fix security vulnerabilities
+
+## Package Management
+
+**Always use Context7 MCP** (`use context7`) in the following situations:
+
+### When to use Context7
+
+- **Installing a new package** — Before adding any npm dependency, use Context7 to fetch the latest version, API surface, and official usage examples for that package.
+- **Updating an existing package** — Before bumping a version in `package.json`, use Context7 to check changelogs, breaking changes, and migration notes for the target version.
+- **API signatures & usage questions** — When unsure how to call a function, configure a library, or use a specific feature of any dependency, use Context7 to retrieve up-to-date, accurate documentation for that package.
+
+### Rules
+
+- Never rely on training-data knowledge alone for package versions or API details — library APIs evolve rapidly.
+- Always resolve the **exact latest stable version** via Context7 before suggesting a version pin.
+- Prefer Context7 over web search for package-specific documentation — it returns structured, version-pinned content directly from official docs/source.
+
+### Example workflow
+
+```
+// 1. User asks to add Zustand
+use context7 to get latest version and setup guide for zustand
+
+// 2. User asks how to use useFormStatus from react-dom
+use context7 to get the useFormStatus API signature and examples
+
+// 3. User asks to upgrade @tanstack/react-query from v4 to v5
+use context7 to get react-query v5 migration guide and breaking changes
+```
+
+---
 
 ## Project Structure
 

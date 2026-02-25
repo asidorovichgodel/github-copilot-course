@@ -1,9 +1,9 @@
-import { requireAuth } from "@/lib/server/roleMiddleware";
-import { prisma } from "@/lib/server/prisma";
-import { ProfileCard } from "./_components/ProfileCard";
+import { requireAuth } from '@/lib/server/roleMiddleware';
+import { prisma } from '@/lib/server/prisma';
+import { ProfileCard } from './_components/ProfileCard';
 
 export const metadata = {
-  title: "My Profile",
+  title: 'My Profile',
 };
 
 type UserWithRoles = {

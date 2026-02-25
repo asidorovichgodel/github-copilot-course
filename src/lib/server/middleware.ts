@@ -28,7 +28,7 @@ export function errorHandler(error: unknown) {
 
   return NextResponse.json(
     createErrorResponse('An unexpected error occurred'),
-    { status: 500 }
+    { status: 500 },
   );
 }
 
@@ -37,7 +37,7 @@ export function errorHandler(error: unknown) {
  * Ensures all errors are caught and formatted consistently
  */
 export function withErrorHandling(
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest) => Promise<NextResponse>,
 ) {
   return async (req: NextRequest) => {
     try {

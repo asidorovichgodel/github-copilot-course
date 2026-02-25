@@ -39,7 +39,7 @@ export const userRegistrationSchema = userRegistrationBaseSchema.refine(
   {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  }
+  },
 );
 
 export type UserRegistrationFormData = z.infer<typeof userRegistrationSchema>;

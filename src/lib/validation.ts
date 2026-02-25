@@ -12,7 +12,7 @@ export function validateString(
   value: unknown,
   fieldName: string,
   minLength = 1,
-  maxLength = 255
+  maxLength = 255,
 ): string {
   if (typeof value !== 'string') {
     throw AppError.validation(`${fieldName} must be a string`);

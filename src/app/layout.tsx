@@ -25,7 +25,7 @@ export default function RootLayout({
         className={cn(
           'min-h-screen bg-background text-foreground antialiased',
           sansFont.variable,
-          displayFont.variable
+          displayFont.variable,
         )}
       >
         <QueryProvider>

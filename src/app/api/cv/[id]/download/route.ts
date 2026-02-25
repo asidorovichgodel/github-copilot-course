@@ -32,7 +32,7 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
     const fileBuffer = await fs.readFile(cvFile.filePath);
 
     // Use the original (user-visible) file name for the download prompt, sanitised for HTTP headers
-    const safeDownloadName = cvFile.originalFileName.replace(/[^\w\s.\-]/g, '_');
+    const safeDownloadName = cvFile.originalFileName.replace(/[^\w\s.-]/g, '_');
 
     return new NextResponse(fileBuffer, {
       headers: {
