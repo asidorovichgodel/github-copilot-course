@@ -70,7 +70,9 @@ export default async function SiteLayout({
                 <BriefcaseBusiness className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-sidebar-foreground/60">Platform</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-sidebar-foreground/60">
+                  Platform
+                </p>
                 <p className="text-lg font-semibold">CV Manager</p>
               </div>
             </div>

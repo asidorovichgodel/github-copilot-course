@@ -25,9 +25,11 @@ test.describe('Dashboard page (authenticated)', () => {
 
   test('should show the user navigation (UserNav)', async ({ page }) => {
     // UserNav renders an avatar button in the header
-    await expect(page.getByRole('button', { name: /user menu|avatar/i }).or(
-      page.locator('[data-slot="avatar"]'),
-    )).toBeVisible();
+    await expect(
+      page
+        .getByRole('button', { name: /user menu|avatar/i })
+        .or(page.locator('[data-slot="avatar"]')),
+    ).toBeVisible();
   });
 });
 

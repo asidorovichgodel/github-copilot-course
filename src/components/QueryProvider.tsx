@@ -20,9 +20,7 @@ interface QueryProviderProps {
 export const QueryProvider = ({ children }: QueryProviderProps) => {
   return (
     <SessionProvider>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </SessionProvider>
   );
 };

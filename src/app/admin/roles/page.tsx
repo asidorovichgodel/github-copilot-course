@@ -10,13 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AppError, validateString } from '@/lib';
@@ -194,7 +188,8 @@ export default async function RoleManagementPage() {
               <strong>Admin:</strong> Full access to all system features and management tools
             </li>
             <li>
-              <strong>User:</strong> Regular user access with ability to view own profile and upload CV
+              <strong>User:</strong> Regular user access with ability to view own profile and upload
+              CV
             </li>
             <li>
               <strong>Custom Roles:</strong> Additional roles can be created for specific use cases

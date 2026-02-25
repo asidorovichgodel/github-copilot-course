@@ -1,8 +1,32 @@
 ---
-description: "Expert Next.js 16 developer specializing in App Router, Server Components, Cache Components, Turbopack, and modern React patterns with TypeScript"
+description: 'Expert Next.js 16 developer specializing in App Router, Server Components, Cache Components, Turbopack, and modern React patterns with TypeScript'
 name: 'Next.js Expert'
-model: "GPT-4.1"
-tools: ["changes", "codebase", "edit/editFiles", "extensions", "fetch", "findTestFiles", "githubRepo", "new", "openSimpleBrowser", "problems", "runCommands", "runNotebooks", "runTasks", "runTests", "search", "searchResults", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "vscodeAPI", "figma-dev-mode-mcp-server"]
+model: 'GPT-4.1'
+tools:
+  [
+    'changes',
+    'codebase',
+    'edit/editFiles',
+    'extensions',
+    'fetch',
+    'findTestFiles',
+    'githubRepo',
+    'new',
+    'openSimpleBrowser',
+    'problems',
+    'runCommands',
+    'runNotebooks',
+    'runTasks',
+    'runTests',
+    'search',
+    'searchResults',
+    'terminalLastCommand',
+    'terminalSelection',
+    'testFailure',
+    'usages',
+    'vscodeAPI',
+    'figma-dev-mode-mcp-server',
+  ]
 ---
 
 # Expert Next.js Developer
@@ -232,34 +256,34 @@ export default async function PostPage({ params }: PostPageProps) {
 
 ```typescript
 // app/actions/create-post.ts
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function createPost(formData: FormData) {
-  const title = formData.get("title") as string;
-  const body = formData.get("body") as string;
+  const title = formData.get('title') as string;
+  const body = formData.get('body') as string;
 
   // Validate
   if (!title || !body) {
-    return { error: "Title and body are required" };
+    return { error: 'Title and body are required' };
   }
 
   // Create post
-  const res = await fetch("https://api.example.com/posts", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const res = await fetch('https://api.example.com/posts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title, body }),
   });
 
   if (!res.ok) {
-    return { error: "Failed to create post" };
+    return { error: 'Failed to create post' };
   }
 
   // Revalidate and redirect
-  revalidatePath("/posts");
-  redirect("/posts");
+  revalidatePath('/posts');
+  redirect('/posts');
 }
 ```
 
@@ -317,11 +341,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ```typescript
 // app/api/posts/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const page = searchParams.get("page") || "1";
+  const page = searchParams.get('page') || '1';
 
   try {
     const res = await fetch(`https://api.example.com/posts?page=${page}`);
@@ -329,7 +353,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
   }
 }
 
@@ -337,16 +361,16 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const res = await fetch("https://api.example.com/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('https://api.example.com/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
 
     const data = await res.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
   }
 }
 ```
@@ -355,17 +379,17 @@ export async function POST(request: NextRequest) {
 
 ```typescript
 // middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   // Check authentication
-  const token = request.cookies.get("auth-token");
+  const token = request.cookies.get('auth-token');
 
   // Protect routes
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (request.nextUrl.pathname.startsWith('/dashboard')) {
     if (!token) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
@@ -373,7 +397,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"],
+  matcher: ['/dashboard/:path*', '/admin/:path*'],
 };
 ```
 
@@ -410,21 +434,21 @@ export async function ProductList() {
 
 ```typescript
 // app/actions/update-product.ts
-"use server";
+'use server';
 
-import { revalidateTag, updateTag, refresh } from "next/cache";
+import { revalidateTag, updateTag, refresh } from 'next/cache';
 
 export async function updateProduct(productId: string, data: any) {
   // Update the product
   const res = await fetch(`https://api.example.com/products/${productId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
-    next: { tags: [`product-${productId}`, "products"] },
+    next: { tags: [`product-${productId}`, 'products'] },
   });
 
   if (!res.ok) {
-    return { error: "Failed to update product" };
+    return { error: 'Failed to update product' };
   }
 
   // Use new v16 cache APIs
@@ -432,7 +456,7 @@ export async function updateProduct(productId: string, data: any) {
   await updateTag(`product-${productId}`);
 
   // revalidateTag: Revalidate all paths with this tag
-  await revalidateTag("products");
+  await revalidateTag('products');
 
   // refresh: Force a full refresh of the current route
   await refresh();

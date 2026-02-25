@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Next.js 16 with App Router, TypeScript, and Tailwind CSS
 - ESLint configuration with security plugin
 - Prettier for code formatting
@@ -25,16 +26,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project documentation updated to define the CV extraction workflow
 
 ### Changed
+
 - Updated README.md with detailed installation and usage instructions
 - Enhanced project documentation structure
 
 ## [0.1.0] - 2026-02-19
 
 ### Added
+
 - Initial project setup
 - Contributing guidelines
 - Code of Conduct
-- Style guide  
+- Style guide
 - PR and issue templates
 - Security policy
 - Initial repository structure

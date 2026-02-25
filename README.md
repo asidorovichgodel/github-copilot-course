@@ -30,29 +30,33 @@ Core workflow:
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/github-copilot-course.git
    cd github-copilot-course
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables:**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your configuration
    ```
 
 4. **Run the development server:**
+
    ```bash
    npm run dev
    ```
 
 5. **Open your browser:**
-   
+
    Navigate to [http://localhost:3000](http://localhost:3000) to see the course website.
 
 ### Available Commands
@@ -89,7 +93,9 @@ This repository is configured with custom agents, instructions, and prompts to e
 Custom agents are specialized assistants you can invoke by name in GitHub Copilot Chat:
 
 #### **@nextjs-expert** ([nextjs-expert.agent.md](.github/agents/nextjs-expert.agent.md))
+
 Your Next.js development expert with deep knowledge of:
+
 - Modern App Router (14+) architecture and patterns
 - Server Components vs Client Components best practices
 - Data fetching, caching strategies, and Server Actions
@@ -119,7 +125,9 @@ These instructions are automatically applied to provide context-aware suggestion
 Prompts are templates for common development tasks that you can invoke with `#` in Copilot Chat:
 
 #### **#create-nextjs-page** ([create-nextjs-page.prompt.md](.github/prompts/create-nextjs-page.prompt.md))
+
 Scaffold new Next.js App Router pages following project conventions:
+
 - Creates page files at `src/app/<route>/page.tsx`
 - Updates navigation sidebar with appropriate icons
 - Implements proper header sections with badges and titles
@@ -129,7 +137,9 @@ Scaffold new Next.js App Router pages following project conventions:
 **Usage:** `#create-nextjs-page create a dashboard page with user statistics`
 
 #### **#add-shadcn-component** ([add-shadcn-component.prompt.md](.github/prompts/add-shadcn-component.prompt.md))
+
 Add shadcn/ui components to the project:
+
 - Installs component in `src/components/ui/`
 - Ensures Tailwind styling consistency
 - Maintains accessibility standards
@@ -140,18 +150,21 @@ Add shadcn/ui components to the project:
 ### How to Use
 
 **Custom Agents:**
+
 1. Open GitHub Copilot Chat (`Ctrl+Shift+I` or `Cmd+Shift+I`)
 2. Type `@` to see available agents
 3. Select the agent and describe your need
 4. Example: `@nextjs-expert explain when to use client vs server components`
 
 **Prompts:**
+
 1. Open GitHub Copilot Chat
 2. Type `#` to see available prompts
 3. Select the prompt and provide context
 4. Example: `#create-nextjs-page create a settings page`
 
 **Instructions:**
+
 - Automatically applied - no action needed
 - Copilot uses these to provide context-aware suggestions
 - Review the instruction files to understand project conventions
@@ -183,4 +196,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## ⭐ Acknowledgments
 
-*To be added as contributors join the project*
+_To be added as contributors join the project_

@@ -60,7 +60,9 @@ test.describe('Profile page (authenticated)', () => {
     await firstNameInput.blur();
 
     // Zod nameSchema: min 2 chars — should show an error
-    await expect(page.locator('[role="alert"], .text-red-500, .text-destructive').first()).toBeVisible();
+    await expect(
+      page.locator('[role="alert"], .text-red-500, .text-destructive').first(),
+    ).toBeVisible();
   });
 
   test('should show a validation error for an invalid email in edit mode', async ({ page }) => {

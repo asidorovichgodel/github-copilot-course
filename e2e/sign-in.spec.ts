@@ -31,7 +31,9 @@ test.describe('Sign-in page', () => {
     await page.getByLabel('Password').focus();
     await page.getByLabel('Email').focus();
 
-    await expect(page.locator('[role="alert"], .text-red-500, .text-destructive').first()).toBeVisible();
+    await expect(
+      page.locator('[role="alert"], .text-red-500, .text-destructive').first(),
+    ).toBeVisible();
   });
 
   test('should show an error for an invalid email format', async ({ page }) => {

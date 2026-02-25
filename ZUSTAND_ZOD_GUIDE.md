@@ -21,23 +21,28 @@ In this project, Zustand and Zod support the CV extraction workflow:
 - Zustand manages the admin review state across upload, review, and confirmation steps.
 
 ### Zustand
+
 A lightweight state management library that makes creating stores simple and predictable.
 
 **When to use:**
+
 - Global application state (UI settings, theme, etc.)
 - Complex multi-step forms
 - Shared state between distant components
 - State that persists across page navigation
 
 **When NOT to use:**
+
 - Simple local component state (use `useState`)
 - API data (use React Query instead)
 - Props that can be drilled down
 
 ### Zod
+
 A TypeScript-first schema validation library for runtime type checking.
 
 **When to use:**
+
 - Form input validation
 - API request/response validation
 - Runtime type checking for external data
@@ -76,8 +81,7 @@ export const useAppStore = create<AppState>()(
       (set) => ({
         isLoading: false,
 
-        setIsLoading: (loading) =>
-          set({ isLoading: loading }, false, 'setIsLoading'),
+        setIsLoading: (loading) => set({ isLoading: loading }, false, 'setIsLoading'),
       }),
       {
         name: 'app-store', // localStorage key
@@ -128,6 +132,7 @@ src/lib/schemas/
 ### Common Validation Patterns
 
 **Basic schema:**
+
 ```typescript
 import { z } from 'zod';
 
@@ -142,6 +147,7 @@ type User = z.infer<typeof userSchema>;
 ```
 
 **Complex validation:**
+
 ```typescript
 const passwordSchema = z
   .string()
@@ -162,18 +168,16 @@ const registrationSchema = z
 ```
 
 **Async validation:**
+
 ```typescript
 const userSchema = z.object({
   email: z
     .string()
     .email()
-    .refine(
-      async (email) => {
-        const exists = await checkEmailExists(email);
-        return !exists;
-      },
-      'Email already registered',
-    ),
+    .refine(async (email) => {
+      const exists = await checkEmailExists(email);
+      return !exists;
+    }, 'Email already registered'),
 });
 
 // Parse with parseAsync
@@ -286,10 +290,7 @@ export async function POST(request: Request) {
     return Response.json({ success: true, data });
   } catch (error) {
     // Return validation errors
-    return Response.json(
-      { errors: formatZodErrors(error) },
-      { status: 400 },
-    );
+    return Response.json({ errors: formatZodErrors(error) }, { status: 400 });
   }
 }
 ```
@@ -310,7 +311,7 @@ export async function updateUser(data: unknown) {
   try {
     // Validate on server
     const validated = userProfileSchema.parse(data);
-    
+
     // Save to database
     return await db.users.update(validated);
   } catch (error) {
@@ -361,6 +362,7 @@ export const UserForm = () => {
 ## Examples
 
 ### Example 1: Login Form
+
 See [`src/components/LoginForm.tsx`](../src/components/LoginForm.tsx)
 
 - Client-side validation with Zod
@@ -368,6 +370,7 @@ See [`src/components/LoginForm.tsx`](../src/components/LoginForm.tsx)
 - Async form submission
 
 ### Example 2: Registration Form
+
 See [`src/components/RegistrationForm.tsx`](../src/components/RegistrationForm.tsx)
 
 - Multi-field validation
@@ -375,6 +378,7 @@ See [`src/components/RegistrationForm.tsx`](../src/components/RegistrationForm.t
 - Complex validation rules
 
 ### Example 3: App Settings with Store
+
 See [`src/components/AppSettings.tsx`](../src/components/AppSettings.tsx)
 
 - Global state with Zustand
@@ -382,6 +386,7 @@ See [`src/components/AppSettings.tsx`](../src/components/AppSettings.tsx)
 - Multiple selector pattern
 
 ### Example 4: Multi-Step Form
+
 See [`src/components/MultiStepFormExample.tsx`](../src/components/MultiStepFormExample.tsx)
 
 - Zustand + Zod combined
@@ -443,7 +448,7 @@ For large forms, validate only changed fields:
 const handleFieldChange = async (field: string, value: unknown) => {
   const fieldSchema = z.object({ [field]: schema.shape[field] });
   const result = fieldSchema.safeParse({ [field]: value });
-  
+
   if (!result.success) {
     setErrors({ [field]: result.error.errors[0].message });
   }

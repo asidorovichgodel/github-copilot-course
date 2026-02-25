@@ -1,6 +1,6 @@
 /**
  * React Query Integration Guide
- * 
+ *
  * This file documents the React Query setup and how to use it
  * for client-server communication via API.
  */

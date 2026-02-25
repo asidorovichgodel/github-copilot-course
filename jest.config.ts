@@ -17,10 +17,7 @@ const config: Config = {
     '^@/exercises/(.*)$': '<rootDir>/exercises/$1',
     '^@/docs/(.*)$': '<rootDir>/docs/$1',
   },
-  testMatch: [
-    '**/__tests__/**/*.[jt]s?(x)',
-    '**/?(*.)+(spec|test).[jt]s?(x)',
-  ],
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   // Exclude Playwright E2E tests — they are run via `npm run e2e`, not Jest
   testPathIgnorePatterns: ['/node_modules/', '/.next/', '/e2e/'],
   collectCoverageFrom: [

@@ -10,12 +10,14 @@ test.describe('Candidate detail page (authenticated)', () => {
     await page.goto('/candidates/non-existent-candidate-id-00000');
 
     // Next.js renders a "Not Found" page — look for typical 404 content
-    await expect(
-      page.getByText(/not found|404|could not be found/i).first(),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/not found|404|could not be found/i).first()).toBeVisible({
+      timeout: 10_000,
+    });
   });
 
-  test('should navigate from Candidates list to a detail page when a row link is clicked', async ({ page }) => {
+  test('should navigate from Candidates list to a detail page when a row link is clicked', async ({
+    page,
+  }) => {
     await page.goto('/candidates');
 
     const viewLinks = page.getByRole('link', { name: /view/i });

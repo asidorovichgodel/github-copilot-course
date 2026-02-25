@@ -1,4 +1,9 @@
-import { validateString, validateEmail, validatePositiveNumber, validateRequired } from '../validation';
+import {
+  validateString,
+  validateEmail,
+  validatePositiveNumber,
+  validateRequired,
+} from '../validation';
 import { AppError } from '../errors';
 
 describe('validation', () => {
@@ -98,7 +103,9 @@ describe('validation', () => {
     });
 
     it('should throw when value is null', () => {
-      expect(() => validatePositiveNumber(null, 'Count')).toThrow('Count must be a positive number');
+      expect(() => validatePositiveNumber(null, 'Count')).toThrow(
+        'Count must be a positive number',
+      );
     });
   });
 

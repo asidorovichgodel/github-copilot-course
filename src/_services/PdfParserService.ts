@@ -44,9 +44,7 @@ export class PdfParserService {
       const page = await pdf.getPage(pageNum);
       const content = await page.getTextContent();
 
-      const pageText = content.items
-        .map((item) => ('str' in item ? item.str : ''))
-        .join(' ');
+      const pageText = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
 
       pageTexts.push(pageText);
     }

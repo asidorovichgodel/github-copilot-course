@@ -100,9 +100,9 @@ describe('UserService', () => {
     });
 
     it('should throw VALIDATION_ERROR when first name is too short', async () => {
-      await expect(
-        userService.createUser({ ...validInput, firstName: '' }),
-      ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+      await expect(userService.createUser({ ...validInput, firstName: '' })).rejects.toMatchObject({
+        code: 'VALIDATION_ERROR',
+      });
     });
 
     it('should throw VALIDATION_ERROR when email is invalid', async () => {
@@ -183,7 +183,9 @@ describe('UserService', () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(userService.updateUser('nonexistent', { firstName: 'Jane' })).rejects.toMatchObject({
+      await expect(
+        userService.updateUser('nonexistent', { firstName: 'Jane' }),
+      ).rejects.toMatchObject({
         code: 'NOT_FOUND',
       });
     });

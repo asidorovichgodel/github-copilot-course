@@ -28,9 +28,7 @@ export async function generateMetadata({ params }: AdminCandidatePageProps) {
   const { id } = await params;
   const candidate = await prisma.candidate.findUnique({ where: { id } });
   return {
-    title: candidate
-      ? `${candidate.fullName} – Candidate | Admin`
-      : 'Candidate Not Found | Admin',
+    title: candidate ? `${candidate.fullName} – Candidate | Admin` : 'Candidate Not Found | Admin',
   };
 }
 

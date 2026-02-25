@@ -5,6 +5,7 @@ This is the main instruction file for GitHub Copilot in this repository. Follow 
 ## Project Overview
 
 This is a GitHub Copilot course repository focused on teaching effective AI-assisted development. The project emphasizes:
+
 - **Education**: Clear, well-documented examples
 - **Best Practices**: Following industry-standard patterns
 - **Accessibility**: Beginner-friendly content with progressive complexity
@@ -13,6 +14,7 @@ This is a GitHub Copilot course repository focused on teaching effective AI-assi
 ## Quick Reference
 
 For detailed instructions by category, see:
+
 - [nextjs.instructions.md](nextjs.instructions.md) - Next.js best practices and patterns (App Router, caching, components)
 - [code-style.instructions.md](code-style.instructions.md) - Code formatting and style guidelines
 - [documentation.instructions.md](documentation.instructions.md) - Documentation standards
@@ -163,12 +165,14 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 ## Code Generation Principles
 
 ### 1. Educational Value
+
 - Prioritize clarity over cleverness
 - Add explanatory comments for complex concepts
 - Provide context and reasoning
 - Show multiple approaches when helpful
 
 ### 2. Production Quality
+
 - Write code that's ready for real-world use
 - Include proper error handling
 - Add input validation
@@ -177,12 +181,14 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 - See [testing.instructions.md](testing.instructions.md) for testing standards
 
 ### 3. Consistency
+
 - Follow existing patterns in the codebase
 - Use consistent naming conventions — see [code-style.instructions.md](code-style.instructions.md)
 - Maintain uniform code style
 - Respect project structure
 
 ### 4. Documentation
+
 - Document public APIs
 - Explain non-obvious logic
 - Include usage examples
@@ -194,6 +200,7 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 > Detailed code style rules (naming conventions, formatting, async patterns, error handling) are defined in [code-style.instructions.md](code-style.instructions.md). For Next.js-specific patterns (App Router, Server/Client Components, data fetching, caching, etc.), refer to [nextjs.instructions.md](nextjs.instructions.md).
 
 ### Key Defaults
+
 - **TypeScript** for all JS/TS files — strict types, modern ES6+, async/await, 2-space indentation
 - **Markdown**: CommonMark spec, relative links, language tags on code blocks, max 120 chars/line
 
@@ -218,7 +225,9 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 4. Relative imports
 
 ### Commit Messages
+
 Follow Conventional Commits format:
+
 ```
 type(scope): subject
 
@@ -257,6 +266,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 ## Notes for Contributors
 
 When updating this file:
+
 1. Keep instructions concise and actionable
 2. Provide examples for clarity
 3. Update related instruction files

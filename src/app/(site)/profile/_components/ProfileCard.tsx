@@ -8,13 +8,7 @@ import { Edit2, Mail, Save, User, X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { userProfileSchema, type UserProfileFormData } from '@/lib/schemas/userSchemas';
 import { updateProfile } from '@/app/_actions/profileActions';
@@ -80,9 +74,7 @@ export function ProfileCard({ user }: Props) {
             <User className="h-5 w-5" />
             Account Details
           </CardTitle>
-          <CardDescription>
-            General information associated with your account.
-          </CardDescription>
+          <CardDescription>General information associated with your account.</CardDescription>
         </div>
 
         {!editing && (
@@ -124,9 +116,7 @@ export function ProfileCard({ user }: Props) {
                 Email
               </label>
               <Input id="email" type="email" disabled={isPending} {...register('email')} />
-              {errors.email && (
-                <p className="text-xs text-destructive">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
             </div>
 
             {/* Roles — read-only */}
@@ -135,7 +125,9 @@ export function ProfileCard({ user }: Props) {
               <div className="mt-2 flex flex-wrap gap-2">
                 {user.roles.length > 0 ? (
                   user.roles.map((role) => (
-                    <Badge key={role} variant="secondary" className="capitalize">{role}</Badge>
+                    <Badge key={role} variant="secondary" className="capitalize">
+                      {role}
+                    </Badge>
                   ))
                 ) : (
                   <span className="text-sm text-muted-foreground">No roles assigned</span>
@@ -149,7 +141,13 @@ export function ProfileCard({ user }: Props) {
                 <Save className="mr-2 h-4 w-4" />
                 {isPending ? 'Saving…' : 'Save changes'}
               </Button>
-              <Button type="button" variant="outline" size="sm" disabled={isPending} onClick={handleCancel}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isPending}
+                onClick={handleCancel}
+              >
                 <X className="mr-2 h-4 w-4" />
                 Cancel
               </Button>
@@ -184,7 +182,9 @@ export function ProfileCard({ user }: Props) {
               <div className="mt-2 flex flex-wrap gap-2">
                 {user.roles.length > 0 ? (
                   user.roles.map((role) => (
-                    <Badge key={role} variant="secondary" className="capitalize">{role}</Badge>
+                    <Badge key={role} variant="secondary" className="capitalize">
+                      {role}
+                    </Badge>
                   ))
                 ) : (
                   <span className="text-sm text-muted-foreground">No roles assigned</span>

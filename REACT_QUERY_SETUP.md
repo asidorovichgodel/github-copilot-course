@@ -1,6 +1,7 @@
 # React Query Integration Summary
 
 ## Overview
+
 React Query (@tanstack/react-query v5) has been successfully integrated into your Next.js project for seamless client-server communication via API.
 
 ## Project Context: CV Extraction
@@ -21,10 +22,12 @@ npm install @tanstack/react-query
 ## Files Created
 
 ### 1. **Core Setup**
+
 - `src/lib/queryClient.ts` - QueryClient configuration with optimized defaults
 - `src/components/QueryProvider.tsx` - Client component wrapper for providing query client to the app
 
 ### 2. **Custom Hooks**
+
 - `src/hooks/useUsers.ts` - Complete set of hooks for User API:
   - `useUser(id)` - Fetch single user
   - `useUsers(page, limit)` - Fetch paginated users list
@@ -33,12 +36,15 @@ npm install @tanstack/react-query
   - `useDeleteUser()` - Delete user mutation
 
 ### 3. **Example Component**
+
 - `src/components/UserManagementExample.tsx` - Reference implementation showing best practices
 
 ### 4. **Documentation**
+
 - `src/lib/REACT_QUERY_GUIDE.ts` - Comprehensive guide with examples and patterns
 
 ### 5. **Exports**
+
 - `src/hooks/index.ts` - Centralized hook exports
 - `src/lib/index.ts` - Updated to export `createQueryClient`
 
@@ -53,7 +59,7 @@ npm install @tanstack/react-query
 ✅ **Error Handling** - Built-in error states and retry logic  
 ✅ **Loading States** - Distinction between first load and background updates  
 ✅ **Pagination Support** - Easy page-based data fetching  
-✅ **Type-Safe** - Full TypeScript support  
+✅ **Type-Safe** - Full TypeScript support
 
 ## Quick Start
 
@@ -67,20 +73,20 @@ import { useUsers, useCreateUser } from '@/hooks/useUsers';
 export function UsersList() {
   // Fetch data
   const { data, isLoading, error } = useUsers(1, 10);
-  
+
   // Mutations
   const createMutation = useCreateUser();
-  
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-  
+
   return (
     <div>
       {data?.data?.items?.map(user => (
         <div key={user.id}>{user.name}</div>
       ))}
-      
-      <button 
+
+      <button
         onClick={() => createMutation.mutate({ name: 'John', email: 'john@example.com' })}
         disabled={createMutation.isPending}
       >
@@ -94,12 +100,14 @@ export function UsersList() {
 ## Configuration Details
 
 ### Default Settings
+
 - **Stale Time**: 5 minutes (data considered fresh)
 - **Garbage Collection**: 10 minutes (cached data retention)
 - **Retry Logic**: 1 automatic retry on failure
 - **Window Focus**: Refetch disabled on window focus
 
 ### Adjusting Configuration
+
 Edit `src/lib/queryClient.ts` to customize these defaults.
 
 ## Adding New API Endpoints
@@ -123,6 +131,7 @@ All API responses follow this structure:
 ```
 
 Paginated responses contain:
+
 ```typescript
 {
   items: T[];
@@ -190,6 +199,7 @@ Then visit `http://localhost:3000` to see your app with React Query integration.
 ## Documentation Reference
 
 For detailed examples and patterns, see:
+
 - `src/lib/REACT_QUERY_GUIDE.ts` - Full guide with 20+ examples
 - `src/components/UserManagementExample.tsx` - Complete working component
 - `src/hooks/useUsers.ts` - Hook implementations with comments

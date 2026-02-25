@@ -1,7 +1,8 @@
-/**
- * Vercel-Aligned Next.js Project Structure
- * README for the reorganized server-side architecture
- */
+/\*\*
+
+- Vercel-Aligned Next.js Project Structure
+- README for the reorganized server-side architecture
+  \*/
 
 # Server Architecture - Aligned with Vercel's Recommended Structure
 
@@ -62,49 +63,57 @@ src/
 
 ## Key Changes from Previous Structure
 
-| Previous | New | Reason |
-|----------|-----|--------|
-| `src/server/common/types/` | `src/lib/types.ts` | Follows Vercel's `lib` convention for shared utilities |
-| `src/server/common/errors/` | `src/lib/errors.ts` | Centralized in lib with other utilities |
-| `src/server/common/utils/` | `src/lib/helpers.ts` + `validation.ts` | Split into focused files in lib |
-| `src/server/repositories/` | `src/_repositories/` | Private folder (`_`) indicates non-routable code |
-| `src/server/services/` | `src/_services/` | Private folder for implementation details |
-| `src/server/controllers/` | `src/app/api/(_api)/_lib/` | Colocated near routes in route group |
-| `src/server/common/middleware/` | `src/lib/server/middleware.ts` | Server-specific utilities in lib/server |
+| Previous                        | New                                    | Reason                                                 |
+| ------------------------------- | -------------------------------------- | ------------------------------------------------------ |
+| `src/server/common/types/`      | `src/lib/types.ts`                     | Follows Vercel's `lib` convention for shared utilities |
+| `src/server/common/errors/`     | `src/lib/errors.ts`                    | Centralized in lib with other utilities                |
+| `src/server/common/utils/`      | `src/lib/helpers.ts` + `validation.ts` | Split into focused files in lib                        |
+| `src/server/repositories/`      | `src/_repositories/`                   | Private folder (`_`) indicates non-routable code       |
+| `src/server/services/`          | `src/_services/`                       | Private folder for implementation details              |
+| `src/server/controllers/`       | `src/app/api/(_api)/_lib/`             | Colocated near routes in route group                   |
+| `src/server/common/middleware/` | `src/lib/server/middleware.ts`         | Server-specific utilities in lib/server                |
 
 ## Why These Changes
 
 ### 1. `src/lib/` - Vercel's Recommended Pattern
+
 Vercel explicitly recommends using `lib` for shared utilities. This is a standard practice in Next.js projects and follows the official Next.js examples.
 
 **Benefits:**
+
 - Follows Vercel's official documentation
 - Clear convention for shared code
 - Easier onboarding for developers familiar with Next.js
 - Better IDE support and import patterns
 
 ### 2. Private Folders (`_services`, `_repositories`)
+
 Using underscore prefix indicates these are implementation details, not meant to be directly imported by routes.
 
 **Benefits:**
+
 - Signals non-routable code
 - Prevents accidental routing of internal logic
 - Clear separation of concerns
 - Consistent with Vercel's recommendations
 
 ### 3. Colocated API Handlers
+
 Keeping route-specific handlers in `app/api/(_api)/_lib/` (near where they're used) follows Vercel's colococation pattern.
 
 **Benefits:**
+
 - Minimal routing layer
 - Easy to find related code
 - Clear dependencies between routes and handlers
 - Scales better as routes grow
 
 ### 4. Route Groups (`(_api)`)
+
 The `(_api)` route group organizes API-related code without affecting URLs (parentheses omit from URL).
 
 **Benefits:**
+
 - Organizes without changing URLs
 - Groups related handlers and utilities
 - Clear mental model of API structure
@@ -113,6 +122,7 @@ The `(_api)` route group organizes API-related code without affecting URLs (pare
 ## Layer Organization (Still Maintained)
 
 ### `src/lib/` - Shared Utilities Layer
+
 **Responsibility:** Cross-cutting utilities, types, configurations
 **Imports:** Nothing (root level)
 **Exports:** Used everywhere
@@ -123,6 +133,7 @@ import { AppError, validateEmail, createSuccessResponse } from '@/lib';
 ```
 
 ### `src/_services/` - Business Logic Layer
+
 **Responsibility:** Enforce business rules, orchestrate data
 **Imports:** `lib`, `_repositories`
 **Exports:** To handlers, server actions, other services
@@ -142,6 +153,7 @@ export class UserService {
 ```
 
 ### `src/_repositories/` - Data Access Layer
+
 **Responsibility:** CRUD operations, database queries
 **Imports:** `lib` (only for error handling)
 **Exports:** To services
@@ -158,6 +170,7 @@ export class UserRepository {
 ```
 
 ### API Route Handlers (in `src/app/api/(_api)/_lib/`)
+
 **Responsibility:** HTTP request/response handling
 **Imports:** `lib`, `_services`
 **Exports:** To route.ts files
@@ -175,6 +188,7 @@ export const createUserHandler = withErrorHandling(async (req) => {
 ```
 
 ### API Routes (in `src/app/api/users/route.ts`)
+
 **Responsibility:** Minimal HTTP method mapping
 **Imports:** Handlers from `(_api)/_lib`
 **Exports:** GET, POST, PUT, DELETE functions
@@ -263,6 +277,7 @@ src/lib/
 ```
 
 Guidelines:
+
 - Keep files focused and single-purpose
 - Export from `index.ts` for clean imports
 - Use `src/lib/` for anything used by multiple features
@@ -283,6 +298,7 @@ src/_repositories/
 ```
 
 Guidelines:
+
 - Use `_` prefix to indicate private/implementation
 - One service per feature typically
 - Export instances, not classes
@@ -298,6 +314,7 @@ src/app/api/(_api)/_lib/
 ```
 
 Guidelines:
+
 - All handlers for an entity in one file
 - Name files clearly (`*Handlers.ts`)
 - Use `withErrorHandling` wrapper
@@ -306,6 +323,7 @@ Guidelines:
 ## Adding New Features
 
 ### 1. Create a Repository
+
 ```bash
 # src/_repositories/CommentRepository.ts
 ```
@@ -321,6 +339,7 @@ export const commentRepository = new CommentRepository();
 ```
 
 ### 2. Create a Service
+
 ```bash
 # src/_services/CommentService.ts
 ```
@@ -342,6 +361,7 @@ export const commentService = new CommentService();
 ```
 
 ### 3. Create Handlers
+
 ```bash
 # src/app/api/(_api)/_lib/commentHandlers.ts
 ```
@@ -359,6 +379,7 @@ export const createCommentHandler = withErrorHandling(async (req) => {
 ```
 
 ### 4. Create Routes
+
 ```bash
 # src/app/api/comments/route.ts
 # src/app/api/comments/[id]/route.ts
@@ -375,24 +396,31 @@ export async function POST(req) {
 ## Vercel Conventions Reference
 
 ### Private Folders
+
 Prefix with underscore: `_folder`
+
 - Not included in routing
 - Good for implementation details
 - Clear intent that folder is private
 
 ### Route Groups
+
 Wrap in parentheses: `(group)`
+
 - Not included in URL
 - Good for organizing related routes
 - Can create multiple nested layouts
 
 ### Colocation
+
 Keep files next to their usage
+
 - Route-specific components near routes
 - Handler utilities near handlers
 - Promotes code discovery
 
 ### Naming
+
 - Folders: `kebab-case`
 - Files: `camelCase.ts` or `PascalCase.tsx`
 - Special files: Lowercase (`layout.tsx`, `route.ts`)
@@ -400,6 +428,7 @@ Keep files next to their usage
 ## Testing
 
 ### Testing Services
+
 ```typescript
 // Services are easiest to test
 import { UserService } from '@/_services';
@@ -415,6 +444,7 @@ describe('UserService', () => {
 ```
 
 ### Testing Handlers
+
 ```typescript
 // Test route handlers
 import { createUserHandler } from '@/app/api/(_api)/_lib/userHandlers';
@@ -431,6 +461,7 @@ describe('User Handlers', () => {
 ## Best Practices
 
 ✅ **Do**
+
 - Keep `lib` focused on cross-cutting utilities
 - Use private folders for implementation details
 - Colocate related code (handlers near routes)
@@ -440,6 +471,7 @@ describe('User Handlers', () => {
 - Import from `src/lib` or barrel exports
 
 ❌ **Don't**
+
 - Mix HTTP concerns in services
 - Import across layer boundaries incorrectly
 - Put business logic in route files
@@ -450,9 +482,9 @@ describe('User Handlers', () => {
 ## Key Files to Understand
 
 - [src/lib/index.ts](../lib/index.ts) - Centralized exports
-- [src/app/api/(_api)/_lib/userHandlers.ts](../app/api/(_api)/_lib/userHandlers.ts) - API handler examples
-- [src/_services/UserService.ts](../_services/UserService.ts) - Business logic example
-- [src/_repositories/UserRepository.ts](../_repositories/UserRepository.ts) - Data access example
+- [src/app/api/(\_api)/\_lib/userHandlers.ts](<../app/api/(_api)/_lib/userHandlers.ts>) - API handler examples
+- [src/\_services/UserService.ts](../_services/UserService.ts) - Business logic example
+- [src/\_repositories/UserRepository.ts](../_repositories/UserRepository.ts) - Data access example
 
 ## References
 

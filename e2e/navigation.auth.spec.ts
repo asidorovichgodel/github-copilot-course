@@ -20,7 +20,10 @@ test.describe('Sidebar navigation (authenticated)', () => {
   });
 
   test('should navigate to Candidates page via sidebar link', async ({ page }) => {
-    await page.getByRole('link', { name: /candidates/i }).first().click();
+    await page
+      .getByRole('link', { name: /candidates/i })
+      .first()
+      .click();
 
     await expect(page).toHaveURL('/candidates');
     await expect(page.getByRole('heading', { name: 'Candidates' })).toBeVisible();
@@ -48,7 +51,10 @@ test.describe('UserNav dropdown (authenticated)', () => {
 
   test('should open the user dropdown when the avatar button is clicked', async ({ page }) => {
     // UserNav renders a SidebarMenuButton with an Avatar inside
-    const userMenuButton = page.getByRole('button').filter({ has: page.locator('[data-slot="avatar-fallback"]') }).first();
+    const userMenuButton = page
+      .getByRole('button')
+      .filter({ has: page.locator('[data-slot="avatar-fallback"]') })
+      .first();
     await userMenuButton.click();
 
     // Dropdown should show Profile and Sign out items
@@ -57,7 +63,10 @@ test.describe('UserNav dropdown (authenticated)', () => {
   });
 
   test('should navigate to /profile via the dropdown Profile link', async ({ page }) => {
-    const userMenuButton = page.getByRole('button').filter({ has: page.locator('[data-slot="avatar-fallback"]') }).first();
+    const userMenuButton = page
+      .getByRole('button')
+      .filter({ has: page.locator('[data-slot="avatar-fallback"]') })
+      .first();
     await userMenuButton.click();
 
     await page.getByRole('menuitem', { name: /profile/i }).click();
@@ -66,7 +75,10 @@ test.describe('UserNav dropdown (authenticated)', () => {
   });
 
   test('should sign out and redirect to sign-in when Sign out is clicked', async ({ page }) => {
-    const userMenuButton = page.getByRole('button').filter({ has: page.locator('[data-slot="avatar-fallback"]') }).first();
+    const userMenuButton = page
+      .getByRole('button')
+      .filter({ has: page.locator('[data-slot="avatar-fallback"]') })
+      .first();
     await userMenuButton.click();
 
     await page.getByRole('menuitem', { name: /sign out/i }).click();

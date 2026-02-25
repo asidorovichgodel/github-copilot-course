@@ -1,5 +1,5 @@
 ---
-description: "Best practices for building Next.js (App Router) apps with modern caching, tooling, and server/client boundaries (aligned with Next.js 16.1.1)."
+description: 'Best practices for building Next.js (App Router) apps with modern caching, tooling, and server/client boundaries (aligned with Next.js 16.1.1).'
 applyTo: '**/*.tsx, **/*.ts, **/*.jsx, **/*.js, **/*.css'
 ---
 
@@ -45,7 +45,7 @@ This document summarizes the latest, authoritative best practices for building, 
 
 ```tsx
 // Server Component
-import DashboardNavbar from "@/components/DashboardNavbar";
+import DashboardNavbar from '@/components/DashboardNavbar';
 
 export default async function DashboardPage() {
   // ...server logic...
@@ -185,12 +185,12 @@ export function MyForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {errors.root && (
-        <p className="text-sm text-destructive">{errors.root.message}</p>
-      )}
+      {errors.root && <p className="text-sm text-destructive">{errors.root.message}</p>}
 
       <div className="space-y-1">
-        <label htmlFor="name" className="block text-sm font-medium">Name</label>
+        <label htmlFor="name" className="block text-sm font-medium">
+          Name
+        </label>
         <Input id="name" disabled={isPending} {...register('name')} />
         {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
       </div>

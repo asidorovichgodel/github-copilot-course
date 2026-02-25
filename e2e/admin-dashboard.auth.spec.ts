@@ -69,7 +69,9 @@ test.describe('Admin access control', () => {
     await context.close();
   });
 
-  test('should redirect unauthenticated users from /admin/users to sign-in', async ({ browser }) => {
+  test('should redirect unauthenticated users from /admin/users to sign-in', async ({
+    browser,
+  }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
@@ -79,7 +81,9 @@ test.describe('Admin access control', () => {
     await context.close();
   });
 
-  test('should redirect unauthenticated users from /admin/roles to sign-in', async ({ browser }) => {
+  test('should redirect unauthenticated users from /admin/roles to sign-in', async ({
+    browser,
+  }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 

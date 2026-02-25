@@ -45,10 +45,7 @@ export const RegistrationForm = () => {
     setErrors({});
 
     // Validate with Zod schema (includes password match check)
-    const validation = validateFormData<UserRegistrationFormData>(
-      userRegistrationSchema,
-      formData,
-    );
+    const validation = validateFormData<UserRegistrationFormData>(userRegistrationSchema, formData);
 
     if (!validation.success && validation.errors) {
       setErrors(validation.errors);
@@ -117,10 +114,10 @@ export const RegistrationForm = () => {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className='w-full max-w-md space-y-4'>
+    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
       {formFields.map(({ name, label, type, placeholder }) => (
         <div key={name}>
-          <label htmlFor={name} className='block text-sm font-medium mb-1'>
+          <label htmlFor={name} className="block text-sm font-medium mb-1">
             {label}
           </label>
           <Input
@@ -133,11 +130,11 @@ export const RegistrationForm = () => {
             placeholder={placeholder}
             className={errors[name] ? 'border-red-500' : ''}
           />
-          {errors[name] && <p className='text-red-500 text-sm mt-1'>{errors[name]}</p>}
+          {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]}</p>}
         </div>
       ))}
 
-      <Button type='submit' className='w-full' disabled={isSubmitting}>
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? 'Registering...' : 'Register'}
       </Button>
     </form>

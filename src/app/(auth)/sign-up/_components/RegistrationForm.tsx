@@ -81,10 +81,10 @@ export const RegistrationForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
       {formFields.map(({ name, label, type, placeholder }) => (
-        <div key={name} className='grid gap-2'>
-          <label htmlFor={name} className='text-sm font-medium'>
+        <div key={name} className="grid gap-2">
+          <label htmlFor={name} className="text-sm font-medium">
             {label}
           </label>
           <Input
@@ -96,19 +96,19 @@ export const RegistrationForm = () => {
             {...register(name)}
           />
           {errors[name]?.message ? (
-            <p className='text-xs text-destructive'>{errors[name]?.message}</p>
+            <p className="text-xs text-destructive">{errors[name]?.message}</p>
           ) : null}
         </div>
       ))}
 
-      <Button type='submit' className='w-full' disabled={isSubmitting}>
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? 'Creating account...' : 'Create account'}
       </Button>
 
-      <p className='text-balance text-center text-xs text-muted-foreground'>
+      <p className="text-balance text-center text-xs text-muted-foreground">
         By creating an account, you agree to our{' '}
-        <span className='underline underline-offset-4'>Terms of Service</span> and{' '}
-        <span className='underline underline-offset-4'>Privacy Policy</span>.
+        <span className="underline underline-offset-4">Terms of Service</span> and{' '}
+        <span className="underline underline-offset-4">Privacy Policy</span>.
       </p>
     </form>
   );

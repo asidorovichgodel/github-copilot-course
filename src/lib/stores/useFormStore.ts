@@ -4,7 +4,7 @@ import { devtools } from 'zustand/middleware';
 /**
  * Form state management for handling complex multi-step forms.
  * Uses Zustand with devtools middleware for debugging.
- * 
+ *
  * Best practices:
  * - Keep form state separate from global state for better isolation
  * - Use this for multi-step forms or forms affecting multiple components
@@ -70,14 +70,11 @@ export const useFormStore = create<FormState>()(
           'setFieldTouched',
         ),
 
-      setCurrentStep: (step: number) =>
-        set({ currentStep: step }, false, 'setCurrentStep'),
+      setCurrentStep: (step: number) => set({ currentStep: step }, false, 'setCurrentStep'),
 
-      setFormData: (data: FormFields) =>
-        set({ fields: data }, false, 'setFormData'),
+      setFormData: (data: FormFields) => set({ fields: data }, false, 'setFormData'),
 
-      resetForm: () =>
-        set(initialState, false, 'resetForm'),
+      resetForm: () => set(initialState, false, 'resetForm'),
     }),
     { name: 'form-store' },
   ),

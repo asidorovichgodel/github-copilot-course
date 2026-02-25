@@ -5,7 +5,13 @@
  */
 
 import { userRepository, type User, type UpdateUserInput } from '@/_repositories';
-import { AppError, validateEmail, validateString, type PaginationParams, type PaginatedResponse } from '@/lib';
+import {
+  AppError,
+  validateEmail,
+  validateString,
+  type PaginationParams,
+  type PaginatedResponse,
+} from '@/lib';
 import { hashPassword } from '@/lib/auth/password';
 
 interface CreateUserInput {

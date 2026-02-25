@@ -25,7 +25,9 @@ test.describe('CV Extraction page (admin authenticated)', () => {
     await expect(page.locator('input[type="file"]')).toBeVisible();
   });
 
-  test('should state PDF-only restriction and 5 MB limit in the card description', async ({ page }) => {
+  test('should state PDF-only restriction and 5 MB limit in the card description', async ({
+    page,
+  }) => {
     await expect(page.getByText(/PDF only/i)).toBeVisible();
     await expect(page.getByText(/5 MB/i)).toBeVisible();
   });

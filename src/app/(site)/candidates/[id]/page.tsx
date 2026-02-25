@@ -1,6 +1,16 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Briefcase, MapPin, Mail, Award, Cpu, Wrench, FileText, Download } from 'lucide-react';
+import {
+  ArrowLeft,
+  Briefcase,
+  MapPin,
+  Mail,
+  Award,
+  Cpu,
+  Wrench,
+  FileText,
+  Download,
+} from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -224,10 +234,7 @@ export default async function CandidateDetailsPage({ params }: CandidatePageProp
           ) : null}
 
           {userIsAdmin ? (
-            <CandidateCvUpload
-              candidateId={candidate.id}
-              candidateName={candidate.fullName}
-            />
+            <CandidateCvUpload candidateId={candidate.id} candidateName={candidate.fullName} />
           ) : null}
         </div>
       </div>
