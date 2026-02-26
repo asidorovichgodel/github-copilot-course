@@ -41,3 +41,9 @@ export const API_MESSAGES = {
   UNAUTHORIZED: 'You are not authorized to perform this action',
   VALIDATION_ERROR: 'Invalid input provided',
 } as const;
+
+// File Uploads
+export const FILE_UPLOAD = {
+  MAX_SIZE_BYTES: 5 * 1024 * 1024,
+  ALLOWED_MIME_TYPES: ['application/pdf'],
+} as const;

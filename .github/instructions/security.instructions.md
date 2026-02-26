@@ -16,7 +16,7 @@ function createUser(userData: unknown): User {
 
   // Validate required fields
   const { email, name } = userData as Record<string, unknown>;
-  
+
   if (!isValidEmail(email)) {
     throw new ValidationError('Invalid email format');
   }
@@ -42,6 +42,7 @@ function createUser(userData: any): User {
 ```
 
 ### Input Validation Rules
+
 - ✅ Validate type, format, length, and range
 - ✅ Use allowlists (permitted values) over denylists
 - ✅ Sanitize HTML/SQL inputs
@@ -81,7 +82,7 @@ function generateToken(userId: string): string {
   return jwt.sign(
     { userId },
     process.env.JWT_SECRET!, // From environment variable
-    { expiresIn: '1h' }
+    { expiresIn: '1h' },
   );
 }
 
@@ -178,13 +179,11 @@ async function getUser(userId: string): Promise<User> {
 ```typescript
 // Good: ORM with parameterized queries
 const user = await User.findOne({
-  where: { id: userId }
+  where: { id: userId },
 });
 
 // Good: Query builder
-const user = await db('users')
-  .where('id', userId)
-  .first();
+const user = await db('users').where('id', userId).first();
 ```
 
 ## XSS Prevention
@@ -212,7 +211,7 @@ function renderUserComment(comment: string): string {
 app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
   );
   next();
 });

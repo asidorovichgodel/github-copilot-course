@@ -1,0 +1,62 @@
+name: Pre-commit Quality Gate
+
+# Runs ESLint and Prettier checks on every PR targeting develop or main.
+# Acts as a fast-feedback quality gate — mirrors what a local pre-commit hook would enforce.
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - '**.js'
+      - '**.jsx'
+      - '**.ts'
+      - '**.tsx'
+
+concurrency:
+  group: pre-commit-${{ github.head_ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  NODE_VERSION: 'lts/*' # Always use the latest LTS release
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Lint & Format — ESLint + Prettier on JS/TS/JSX/TSX source files
+  # ---------------------------------------------------------------------------
+  pre-commit:
+    name: ESLint & Prettier
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js (latest LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # -----------------------------------------------------------------------
+      # ESLint — covers .js, .jsx, .ts, .tsx (aligns with package.json "lint")
+      # -----------------------------------------------------------------------
+      - name: Run ESLint
+        run: npm run lint
+
+      # -----------------------------------------------------------------------
+      # Prettier — dry-run check; fails if any file would be reformatted
+      # -----------------------------------------------------------------------
+      - name: Check Prettier formatting
+        run: npm run format:check

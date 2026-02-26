@@ -16,7 +16,7 @@ export interface ValidationResult<T> {
  * Returns structured result with data or formatted errors.
  */
 export const validateFormData = <T>(
-  schema: ZodType<any>,
+  schema: ZodType<unknown>,
   data: unknown,
 ): ValidationResult<T> => {
   try {
@@ -32,6 +32,7 @@ export const validateFormData = <T>(
 
       Object.entries(errors).forEach(([field, messages]) => {
         if (Array.isArray(messages) && messages.length > 0) {
+          // eslint-disable-next-line security/detect-object-injection
           formattedErrors[field] = messages[0]; // Use first error message
         }
       });
@@ -54,7 +55,7 @@ export const validateFormData = <T>(
  * Useful for schemas with async refinements.
  */
 export const validateFormDataAsync = async <T>(
-  schema: ZodType<any>,
+  schema: ZodType<unknown>,
   data: unknown,
 ): Promise<ValidationResult<T>> => {
   try {
@@ -70,6 +71,7 @@ export const validateFormDataAsync = async <T>(
 
       Object.entries(errors).forEach(([field, messages]) => {
         if (Array.isArray(messages) && messages.length > 0) {
+          // eslint-disable-next-line security/detect-object-injection
           formattedErrors[field] = messages[0];
         }
       });

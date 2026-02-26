@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(cuid()) @map("id")
+  email        String     @unique @map("email")
+  firstName    String     @map("first_name")
+  lastName     String     @map("last_name")
+  passwordHash String     @map("password_hash")
+  roles        UserRole[]
+  candidate    Candidate?
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Role {
+  id    String     @id @default(cuid()) @map("id")
+  name  String     @unique @map("name")
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId String @map("user_id")
+  roleId String @map("role_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+// Candidate represents a person extracted from a CV - not necessarily a system user
+model Candidate {
+  id             String         @id @default(cuid()) @map("id")
+  fullName       String         @map("full_name")
+  email          String?        @unique @map("email")
+  title          String?        @map("title")
+  location       String?        @map("location")
+  summary        String?        @map("summary")
+  technologies   String[]       @map("technologies")
+  certifications String[]       @map("certifications")
+  skills         String[]       @map("skills")
+  userId         String?        @unique @map("user_id")
+  user           User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  experiences    Experience[]
+  // History of all uploaded CV files; the latest one has isLatest = true
+  cvFiles        CandidateCv[]
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  @@map("candidates")
+}
+
+// Tracks every CV file uploaded for a candidate
+model CandidateCv {
+  id               String    @id @default(cuid()) @map("id")
+  candidateId      String    @map("candidate_id")
+  candidate        Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  // Original file name shown to users (real name)
+  originalFileName String    @map("original_file_name")
+  // Technical file name stored on disk
+  storedFileName   String    @map("stored_file_name")
+  filePath         String    @map("file_path")
+  isLatest         Boolean   @default(false) @map("is_latest")
+  uploadedAt       DateTime  @default(now()) @map("uploaded_at")
+  uploadedBy       String?   @map("uploaded_by")
+
+  @@map("candidate_cvs")
+}
+
+model Experience {
+  id          String    @id @default(cuid()) @map("id")
+  candidateId String    @map("candidate_id")
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  company     String    @map("company")
+  title       String    @map("title")
+  startDate   String?   @map("start_date")
+  endDate     String?   @map("end_date")
+  description String?   @map("description")
+
+  @@map("experiences")
+}

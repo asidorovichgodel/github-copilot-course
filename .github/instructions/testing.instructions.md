@@ -5,11 +5,13 @@ When generating tests for this project, follow these guidelines:
 ## Testing Principles
 
 ### Test Pyramid
+
 - **Unit Tests** (70%): Test individual functions/methods
 - **Integration Tests** (20%): Test component interactions
 - **E2E Tests** (10%): Test complete user workflows
 
 ### Good Test Characteristics (F.I.R.S.T)
+
 - **Fast**: Run quickly
 - **Independent**: Don't depend on other tests
 - **Repeatable**: Same result every time
@@ -42,10 +44,12 @@ describe('UserService', () => {
 ## Naming Conventions
 
 ### Test File Names
+
 - JavaScript/TypeScript: `filename.test.ts` or `filename.spec.ts`
 - Python: `test_filename.py`
 
 ### Test Names
+
 Be descriptive and follow pattern: `should [expected behavior] when [condition]`
 
 ```typescript
@@ -182,7 +186,7 @@ class TestUserService:
     def test_create_user_raises_error_on_invalid_email(self, user_service):
         """Should raise ValidationError when email is invalid."""
         invalid_user = {"name": "Jane", "email": "invalid"}
-        
+
         with pytest.raises(ValidationError, match="Invalid email"):
             user_service.create_user(invalid_user)
 
@@ -216,7 +220,7 @@ it('should fetch user data', async () => {
   });
 
   const result = await fetchUserData('1');
-  
+
   expect(result.name).toBe('John');
   expect(mockFetch).toHaveBeenCalledWith('/api/users/1');
 });
@@ -236,11 +240,13 @@ jest.mock('./database', () => ({
 ## Test Coverage
 
 ### Aim for High Coverage
+
 - Critical paths: 100%
 - Business logic: 90%+
 - Overall: 80%+
 
 ### What to Test
+
 - ✅ Happy path scenarios
 - ✅ Error conditions
 - ✅ Edge cases (empty arrays, null, undefined)
@@ -248,6 +254,7 @@ jest.mock('./database', () => ({
 - ✅ Invalid inputs
 
 ### What NOT to Test
+
 - ❌ Third-party libraries
 - ❌ Language/framework built-ins
 - ❌ Trivial getters/setters
@@ -280,9 +287,7 @@ describe('User API Integration', () => {
     const userId = createResponse.body.id;
 
     // Retrieve user
-    const getResponse = await request(app)
-      .get(`/api/users/${userId}`)
-      .expect(200);
+    const getResponse = await request(app).get(`/api/users/${userId}`).expect(200);
 
     expect(getResponse.body.name).toBe('John');
   });

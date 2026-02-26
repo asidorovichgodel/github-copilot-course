@@ -31,3 +31,18 @@ export interface RequestContext {
   requestId: string;
   timestamp: Date;
 }
+
+export interface CvExtractedProfile {
+  fullName: string;
+  email: string;
+  title?: string;
+  location?: string;
+  skills?: string[];
+  summary?: string;
+}
+
+export interface CvConflict {
+  field: 'name' | 'email';
+  currentValue?: string | null;
+  incomingValue?: string | null;
+}

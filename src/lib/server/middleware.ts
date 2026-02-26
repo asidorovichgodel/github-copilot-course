@@ -26,19 +26,14 @@ export function errorHandler(error: unknown) {
     });
   }
 
-  return NextResponse.json(
-    createErrorResponse('An unexpected error occurred'),
-    { status: 500 }
-  );
+  return NextResponse.json(createErrorResponse('An unexpected error occurred'), { status: 500 });
 }
 
 /**
  * Wrapper for API route handlers with error handling
  * Ensures all errors are caught and formatted consistently
  */
-export function withErrorHandling(
-  handler: (req: NextRequest) => Promise<NextResponse>
-) {
+export function withErrorHandling(handler: (req: NextRequest) => Promise<NextResponse>) {
   return async (req: NextRequest) => {
     try {
       return await handler(req);
