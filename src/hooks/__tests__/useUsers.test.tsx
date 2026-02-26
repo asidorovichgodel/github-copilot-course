@@ -77,7 +77,10 @@ describe('useUsers()', () => {
 
   it('should fetch with default pagination (page=1, limit=10)', async () => {
     // Arrange
-    const responseData = { success: true, data: { items: [], total: 0, page: 1, limit: 10, totalPages: 0 } };
+    const responseData = {
+      success: true,
+      data: { items: [], total: 0, page: 1, limit: 10, totalPages: 0 },
+    };
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => responseData,
@@ -95,7 +98,10 @@ describe('useUsers()', () => {
 
   it('should fetch with custom pagination parameters', async () => {
     // Arrange
-    const responseData = { success: true, data: { items: [], total: 0, page: 2, limit: 5, totalPages: 0 } };
+    const responseData = {
+      success: true,
+      data: { items: [], total: 0, page: 2, limit: 5, totalPages: 0 },
+    };
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => responseData,

@@ -44,7 +44,11 @@ describe('useIsMobile()', () => {
   it('should return false when window.innerWidth is at the breakpoint (768)', () => {
     // Arrange
     const { mock } = createMatchMediaMock();
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: mock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: mock,
+    });
     setInnerWidth(MOBILE_BREAKPOINT);
 
     // Act
@@ -57,7 +61,11 @@ describe('useIsMobile()', () => {
   it('should return false when window.innerWidth is wider than the breakpoint', () => {
     // Arrange
     const { mock } = createMatchMediaMock();
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: mock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: mock,
+    });
     setInnerWidth(1024);
 
     // Act
@@ -70,7 +78,11 @@ describe('useIsMobile()', () => {
   it('should return true when window.innerWidth is below the breakpoint', () => {
     // Arrange
     const { mock } = createMatchMediaMock();
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: mock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: mock,
+    });
     setInnerWidth(375);
 
     // Act
@@ -83,7 +95,11 @@ describe('useIsMobile()', () => {
   it('should return true when window.innerWidth is 767 (one below breakpoint)', () => {
     // Arrange
     const { mock } = createMatchMediaMock();
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: mock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: mock,
+    });
     setInnerWidth(MOBILE_BREAKPOINT - 1);
 
     // Act
@@ -96,7 +112,11 @@ describe('useIsMobile()', () => {
   it('should update isMobile when the media query change event fires', () => {
     // Arrange
     const { mock, triggerChange } = createMatchMediaMock();
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: mock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: mock,
+    });
     setInnerWidth(1024); // start as desktop
 
     const { result } = renderHook(() => useIsMobile());
@@ -119,7 +139,11 @@ describe('useIsMobile()', () => {
       removeEventListener,
       dispatchEvent: jest.fn(),
     });
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: matchMediaMock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: matchMediaMock,
+    });
     setInnerWidth(1024);
 
     const { unmount } = renderHook(() => useIsMobile());
@@ -140,7 +164,11 @@ describe('useIsMobile()', () => {
       removeEventListener: jest.fn(),
       dispatchEvent: jest.fn(),
     });
-    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: matchMediaMock });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: matchMediaMock,
+    });
     setInnerWidth(1024);
 
     // Act

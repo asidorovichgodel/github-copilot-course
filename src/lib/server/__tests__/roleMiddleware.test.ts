@@ -100,7 +100,10 @@ describe('roleMiddleware', () => {
 
     it('should return the session when the user has admin among multiple roles', async () => {
       // Arrange
-      const session = { user: { id: 'u1', email: 'a@b.com', roles: ['user', 'admin'] }, expires: '' };
+      const session = {
+        user: { id: 'u1', email: 'a@b.com', roles: ['user', 'admin'] },
+        expires: '',
+      };
       mockGetServerSession.mockResolvedValue(session as never);
 
       // Act
