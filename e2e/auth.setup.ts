@@ -11,7 +11,11 @@ import path from 'path';
  */
 const authFile = path.join(__dirname, '.auth/user.json');
 
+// SKIPPED: Requires a running PostgreSQL database seeded with an admin user
+// (admin@example.com / Password1!). Configure the test environment first —
+// see "E2E Test Environment Setup" in README.md.
 setup('authenticate', async ({ page }) => {
+  setup.skip(true, 'Test environment not configured: database and seeded admin user required.');
   const email = process.env.E2E_EMAIL ?? 'admin@example.com';
   const password = process.env.E2E_PASSWORD ?? 'Password1!';
 

@@ -54,7 +54,9 @@ Prompts are templates for common development tasks invoked with `#` in Copilot C
 
 - **#add-shadcn-component** ([add-shadcn-component.prompt.md](../prompts/add-shadcn-component.prompt.md)) - Add shadcn/ui components to the project with proper configuration and styling alignment.
 
-**Usage:** Type `#create-nextjs-page` or `#add-shadcn-component` in Copilot Chat, followed by your specific request.
+- **#update-changelog** ([update-changelog.prompt.md](../prompts/update-changelog.prompt.md)) - Draft a new `CHANGELOG.md` entry based on recent git history. Inspects commits, determines the correct semver bump, and writes a properly formatted entry following Keep a Changelog conventions.
+
+**Usage:** Type `#create-nextjs-page`, `#add-shadcn-component`, or `#update-changelog` in Copilot Chat, followed by your specific request.
 
 ## Build & Test Commands
 
@@ -146,10 +148,7 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 │   └── ...
 │
 ├── public/               # Static assets
-├── PROJECT_STRUCTURE.md  # Quick reference guide
-├── VERCEL_STRUCTURE.md   # Detailed structure documentation
-├── MIGRATION_GUIDE.md    # What changed from previous structure
-├── docs/                 # Project documentation
+├── docs/                 # Project documentation (see docs/ for the full guide)
 ├── lessons/              # Lesson content markdown files
 ├── exercises/            # Practice exercises
 └── tests/                # Test files (collocated with source)

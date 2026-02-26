@@ -39,8 +39,6 @@ const config: Config = {
     '!src/proxy.ts',
     // Pure TypeScript type declarations
     '!src/types/**',
-    // Guide/documentation files bundled as TS modules
-    '!src/lib/REACT_QUERY_GUIDE.ts',
     // Zustand stores — state containers tested implicitly via component tests
     '!src/lib/stores/**',
     // shadcn/ui primitives — auto-generated, third-party-managed UI components
