@@ -22,9 +22,46 @@ const config: Config = {
   testPathIgnorePatterns: ['/node_modules/', '/.next/', '/e2e/'],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
+    // Type declarations — nothing executable to test
     '!src/**/*.d.ts',
+    // Storybook stories
     '!src/**/*.stories.{js,jsx,ts,tsx}',
+    // Test files themselves
     '!src/**/__tests__/**',
+    // Next.js App Router — pages, layouts, loading states, API routes.
+    // These are framework-glue files and server actions that require
+    // integration/E2E tests (Playwright), not Jest unit tests.
+    '!src/app/**',
+    // Repositories are data-access infrastructure that talk directly to the
+    // database; they are covered by integration/E2E tests, not unit tests.
+    '!src/_repositories/**',
+    // Infrastructure entry-points / config files
+    '!src/proxy.ts',
+    // Pure TypeScript type declarations
+    '!src/types/**',
+    // Guide/documentation files bundled as TS modules
+    '!src/lib/REACT_QUERY_GUIDE.ts',
+    // Zustand stores — state containers tested implicitly via component tests
+    '!src/lib/stores/**',
+    // shadcn/ui primitives — auto-generated, third-party-managed UI components
+    '!src/components/ui/**',
+    // Barrel / re-export index files — no executable logic to exercise
+    '!src/hooks/index.ts',
+    '!src/lib/index.ts',
+    '!src/lib/schemas/index.ts',
+    '!src/lib/server/index.ts',
+    '!src/_services/index.ts',
+    // Pure constant declarations — no branching logic to cover
+    '!src/lib/constants.ts',
+    // TypeScript interface / type declarations — nothing executable
+    '!src/lib/types.ts',
+    // NextAuth configuration — deep framework integration, covered by E2E tests
+    '!src/lib/auth.ts',
+    // Prisma singleton — database infrastructure, covered by integration tests
+    '!src/lib/server/prisma.ts',
+    // PdfParserService — relies on pdfjs-dist dynamic imports with a worker file;
+    // cannot be reliably unit-tested in Jest; covered by integration/E2E tests.
+    '!src/_services/PdfParserService.ts',
   ],
 };
 
