@@ -55,11 +55,19 @@ test.describe('Sign-in page', () => {
   });
 
   test('should disable the submit button during submission', async ({ page }) => {
+    // Intercept the NextAuth sign-in request to introduce a delay so we can
+    // observe the disabled / loading state before the response arrives.
+    await page.route('**/api/auth/**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2_000));
+      await route.continue();
+    });
+
     await page.getByLabel('Email').fill('test@example.com');
     await page.getByLabel('Password').fill('Password1!');
 
-    // Click and immediately check button state
-    const submitButton = page.getByRole('button', { name: 'Sign in' });
+    // Use a type-based selector so it still matches after the label changes to
+    // 'Signing in...' (isSubmitting = true)
+    const submitButton = page.locator('button[type="submit"]');
     await submitButton.click();
 
     // Button should be disabled while the network request is pending
