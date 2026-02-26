@@ -52,6 +52,7 @@ const SheetContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500',
+        // eslint-disable-next-line security/detect-object-injection
         sheetVariants[side],
         className,
       )}

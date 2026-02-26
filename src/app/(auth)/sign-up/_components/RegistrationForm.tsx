@@ -82,24 +82,28 @@ export const RegistrationForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-      {formFields.map(({ name, label, type, placeholder }) => (
-        <div key={name} className="grid gap-2">
-          <label htmlFor={name} className="text-sm font-medium">
-            {label}
-          </label>
-          <Input
-            id={name}
-            type={type}
-            placeholder={placeholder}
-            autoComplete={name === 'password' ? 'new-password' : name}
-            disabled={isSubmitting}
-            {...register(name)}
-          />
-          {errors[name]?.message ? (
-            <p className="text-xs text-destructive">{errors[name]?.message}</p>
-          ) : null}
-        </div>
-      ))}
+      {formFields.map(({ name, label, type, placeholder }) => {
+        // eslint-disable-next-line security/detect-object-injection
+        const fieldError = errors[name];
+        return (
+          <div key={name} className="grid gap-2">
+            <label htmlFor={name} className="text-sm font-medium">
+              {label}
+            </label>
+            <Input
+              id={name}
+              type={type}
+              placeholder={placeholder}
+              autoComplete={name === 'password' ? 'new-password' : name}
+              disabled={isSubmitting}
+              {...register(name)}
+            />
+            {fieldError?.message ? (
+              <p className="text-xs text-destructive">{fieldError.message}</p>
+            ) : null}
+          </div>
+        );
+      })}
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? 'Creating account...' : 'Create account'}

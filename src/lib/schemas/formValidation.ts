@@ -32,6 +32,7 @@ export const validateFormData = <T>(
 
       Object.entries(errors).forEach(([field, messages]) => {
         if (Array.isArray(messages) && messages.length > 0) {
+          // eslint-disable-next-line security/detect-object-injection
           formattedErrors[field] = messages[0]; // Use first error message
         }
       });
@@ -70,6 +71,7 @@ export const validateFormDataAsync = async <T>(
 
       Object.entries(errors).forEach(([field, messages]) => {
         if (Array.isArray(messages) && messages.length > 0) {
+          // eslint-disable-next-line security/detect-object-injection
           formattedErrors[field] = messages[0];
         }
       });

@@ -2,7 +2,6 @@ jest.mock('openai');
 
 import OpenAI from 'openai';
 import { LlmService } from '../LlmService';
-import { AppError } from '@/lib';
 
 const MockOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
 const mockCreate = jest.fn();

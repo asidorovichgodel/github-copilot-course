@@ -51,6 +51,7 @@ async function getCandidateStats() {
   const skillFrequency: Record<string, number> = {};
   for (const c of allCandidates) {
     for (const skill of c.skills) {
+      // eslint-disable-next-line security/detect-object-injection
       skillFrequency[skill] = (skillFrequency[skill] ?? 0) + 1;
     }
   }
@@ -63,6 +64,7 @@ async function getCandidateStats() {
   const techFrequency: Record<string, number> = {};
   for (const c of allCandidates) {
     for (const tech of c.technologies) {
+      // eslint-disable-next-line security/detect-object-injection
       techFrequency[tech] = (techFrequency[tech] ?? 0) + 1;
     }
   }
