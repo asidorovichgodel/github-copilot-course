@@ -27,20 +27,20 @@ The course project is a **CV Extraction & Candidate Management** application bui
 
 ### Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript 5 |
-| Database ORM | Prisma 6 + PostgreSQL |
-| Authentication | NextAuth.js v4 |
-| AI / LLM | OpenAI API (GPT-4.1) |
-| PDF Parsing | pdfjs-dist |
-| Client State | Zustand |
-| Server State | TanStack React Query v5 |
-| Validation | Zod v4 |
-| Forms | React Hook Form |
-| UI Components | Radix UI + shadcn/ui + Tailwind CSS v4 |
-| Testing | Jest + React Testing Library + Playwright |
+| Layer          | Technology                                |
+| -------------- | ----------------------------------------- |
+| Framework      | Next.js 16 (App Router)                   |
+| Language       | TypeScript 5                              |
+| Database ORM   | Prisma 6 + PostgreSQL                     |
+| Authentication | NextAuth.js v4                            |
+| AI / LLM       | OpenAI API (GPT-4.1)                      |
+| PDF Parsing    | pdfjs-dist                                |
+| Client State   | Zustand                                   |
+| Server State   | TanStack React Query v5                   |
+| Validation     | Zod v4                                    |
+| Forms          | React Hook Form                           |
+| UI Components  | Radix UI + shadcn/ui + Tailwind CSS v4    |
+| Testing        | Jest + React Testing Library + Playwright |
 
 ### Core Workflow
 
@@ -69,16 +69,19 @@ The course project is a **CV Extraction & Candidate Management** application bui
 The following prompts were used (in order) to build this project with GitHub Copilot Agent Mode.
 
 ### 1. Scaffold the Next.js App
+
 ```
 Plan: Create a plan for scaffolding a nextjs project -> Agent: make the changes according to the provided plan
 ```
 
 ### 2. Align Project Structure with Vercel Recommendations
+
 ```
 Agent: check this (https://nextjs.org/docs/app/getting-started/project-structure) and adapt the structure to the recommended by vercel
 ```
 
 ### 3. Add Sign-In / Sign-Up
+
 ```
 add sign-up and sign-in flows to the application:
 1. Only authorized users should be allowed working with the application.
@@ -91,6 +94,7 @@ add sign-up and sign-in flows to the application:
 ```
 
 ### 4. Split Main and Admin Layouts
+
 ```
 In the application I need to have two layouts: main and admin (which can be accessed only by users with admin role).
 I need to put user management pages and role management pages (not in place yet, so you need to create) under the admin layout.
@@ -110,6 +114,7 @@ NOTE: uploaded PDF should be saved locally at this stage.
 ```
 
 ### 5. Add CV Processing
+
 ```
 I need to add a PDF file processing flow:
 1. User should be able to upload a PDF file with CV. If this CV is associated with an existing user then user data should be updated. If not, user association then create a new user in the system. It should not be considered as a new system user, but just an entity.
@@ -122,17 +127,20 @@ I need to add a PDF file processing flow:
 ```
 
 ### 6. Convert API Endpoints to Server Actions
+
 ```
 You need to perform a deep analysis and decide whether everything can be moved to the server actions or not. After analysis perform the required actions.
 ```
 
 ### 7. Test Coverage
+
 ```
 1. Analyze the codebase, determine which parts of it can be covered with the tests and cover them. Take into account pages, components, services, helpers etc.
 2. Create a set of e2e test scenarios using playwright.
 ```
 
 ### 8. CI/CD
+
 ```
 Generate a GitHub Actions workflow for a GitFlow project:
 - Branches: feature/*, develop, release/*, hotfix/*, main
@@ -144,11 +152,13 @@ Generate a GitHub Actions workflow for a GitFlow project:
 ```
 
 ### 9. Documentation
+
 ```
 Review all the documentation in the project and group, replace, restructure it to make the codebase more readable and ready for future development with AI agents (assistants or autonomic).
 ```
 
 ### 10. Clean Up
+
 ```
 Review the codebase and do the following:
 1. Delete empty folders.
@@ -161,28 +171,28 @@ Review the codebase and do the following:
 
 ### GitHub Copilot Features
 
-| Feature | Usage |
-|---|---|
-| **Copilot Chat (Inline & Panel)** | Code generation, explanation, refactoring, debugging |
-| **Copilot Edits / Agent Mode** | Multi-file edits, autonomous feature implementation |
-| **Custom Instructions** | `.github/instructions/` files scoped per file type |
-| **Reusable Prompts** | `.github/prompts/` for repeated scaffolding tasks |
-| **Custom Agent** | `.github/agents/nextjs-expert.agent.md` — a Next.js 16 expert persona |
+| Feature                           | Usage                                                                 |
+| --------------------------------- | --------------------------------------------------------------------- |
+| **Copilot Chat (Inline & Panel)** | Code generation, explanation, refactoring, debugging                  |
+| **Copilot Edits / Agent Mode**    | Multi-file edits, autonomous feature implementation                   |
+| **Custom Instructions**           | `.github/instructions/` files scoped per file type                    |
+| **Reusable Prompts**              | `.github/prompts/` for repeated scaffolding tasks                     |
+| **Custom Agent**                  | `.github/agents/nextjs-expert.agent.md` — a Next.js 16 expert persona |
 
 ### Models
 
-| Model | Role |
-|---|---|
-| **GPT-4.1** | Primary model used for the custom Next.js Expert agent (code generation, architecture) |
-| **Claude Sonnet 4.6** | GitHub Copilot Chat model used during development sessions |
-| **OpenAI GPT-4.1** (runtime) | LLM used at runtime inside the app to parse and structure CV text |
+| Model                        | Role                                                                                   |
+| ---------------------------- | -------------------------------------------------------------------------------------- |
+| **GPT-4.1**                  | Primary model used for the custom Next.js Expert agent (code generation, architecture) |
+| **Claude Sonnet 4.6**        | GitHub Copilot Chat model used during development sessions                             |
+| **OpenAI GPT-4.1** (runtime) | LLM used at runtime inside the app to parse and structure CV text                      |
 
 ### MCP Servers
 
-| MCP Server | Purpose |
-|---|---|
-| **Playwright MCP** | Browser automation inside Copilot agent sessions — used for E2E verification and interactive testing during development |
-| **Context7 MCP** | Retrieves up-to-date library documentation and code examples directly inside Copilot Chat (e.g. Next.js, Prisma, Zod, TanStack Query) |
+| MCP Server         | Purpose                                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Playwright MCP** | Browser automation inside Copilot agent sessions — used for E2E verification and interactive testing during development               |
+| **Context7 MCP**   | Retrieves up-to-date library documentation and code examples directly inside Copilot Chat (e.g. Next.js, Prisma, Zod, TanStack Query) |
 
 ### Agent Tools Enabled
 
@@ -190,25 +200,25 @@ The custom Next.js Expert agent (`.github/agents/nextjs-expert.agent.md`) was co
 
 ### Instruction Files Used
 
-| File | Scope |
-|---|---|
-| `copilot-instructions.md` | Global — project-wide Copilot behaviour |
-| `code-style.instructions.md` | Global — code style and conventions |
-| `nextjs.instructions.md` | Applied to `**/*.tsx`, `**/*.ts`, `**/*.jsx`, `**/*.js`, `**/*.css` |
-| `cicd.instructions.md` | Applied to `.github/workflows/*.yml` |
-| `security.instructions.md` | Global — security best practices |
-| `testing.instructions.md` | Global — testing standards |
-| `database.instructions.md` | Global — database patterns |
-| `documentation.instructions.md` | Global — documentation standards |
-| `pr-review.instructions.md` | Applied to all files — code review guidelines |
+| File                            | Scope                                                               |
+| ------------------------------- | ------------------------------------------------------------------- |
+| `copilot-instructions.md`       | Global — project-wide Copilot behaviour                             |
+| `code-style.instructions.md`    | Global — code style and conventions                                 |
+| `nextjs.instructions.md`        | Applied to `**/*.tsx`, `**/*.ts`, `**/*.jsx`, `**/*.js`, `**/*.css` |
+| `cicd.instructions.md`          | Applied to `.github/workflows/*.yml`                                |
+| `security.instructions.md`      | Global — security best practices                                    |
+| `testing.instructions.md`       | Global — testing standards                                          |
+| `database.instructions.md`      | Global — database patterns                                          |
+| `documentation.instructions.md` | Global — documentation standards                                    |
+| `pr-review.instructions.md`     | Applied to all files — code review guidelines                       |
 
 ### Reusable Prompts
 
-| Prompt | Purpose |
-|---|---|
-| `create-nextjs-page.prompt.md` | Scaffold a new Next.js App Router page |
-| `add-shadcn-component.prompt.md` | Add and wire up a shadcn/ui component |
-| `update-changelog.prompt.md` | Generate a CHANGELOG entry from recent changes |
+| Prompt                           | Purpose                                        |
+| -------------------------------- | ---------------------------------------------- |
+| `create-nextjs-page.prompt.md`   | Scaffold a new Next.js App Router page         |
+| `add-shadcn-component.prompt.md` | Add and wire up a shadcn/ui component          |
+| `update-changelog.prompt.md`     | Generate a CHANGELOG entry from recent changes |
 
 ---
 
