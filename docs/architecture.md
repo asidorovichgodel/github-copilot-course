@@ -19,23 +19,25 @@ This is a **Next.js 16 App Router** application implementing a CV/resume extract
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router, Turbopack) |
-| Language | TypeScript |
-| Database | PostgreSQL (via Prisma ORM) |
-| Authentication | NextAuth.js |
-| State Management | Zustand |
-| Validation | Zod |
-| API Client | TanStack React Query v5 |
-| UI Components | shadcn/ui + Tailwind CSS |
-| Testing | Jest + Playwright |
-| LLM Integration | Configurable LLM service |
+| Layer            | Technology                         |
+| ---------------- | ---------------------------------- |
+| Framework        | Next.js 16 (App Router, Turbopack) |
+| Language         | TypeScript                         |
+| Database         | PostgreSQL (via Prisma ORM)        |
+| Authentication   | NextAuth.js                        |
+| State Management | Zustand                            |
+| Validation       | Zod                                |
+| API Client       | TanStack React Query v5            |
+| UI Components    | shadcn/ui + Tailwind CSS           |
+| Testing          | Jest + Playwright                  |
+| LLM Integration  | Configurable LLM service           |
 
 ## Layer Architecture
 
 ### Route Layer — `src/app/api/*/route.ts`
+
 **Responsibility:** Map HTTP methods to handlers. Minimal, 5–10 lines.
+
 ```typescript
 import { getUsersHandler, createUserHandler } from '@/app/api/(_api)/_lib/userHandlers';
 export const GET = getUsersHandler;
@@ -43,7 +45,9 @@ export const POST = createUserHandler;
 ```
 
 ### Handler Layer — `src/app/api/(_api)/_lib/*Handlers.ts`
+
 **Responsibility:** Parse request, validate HTTP contract, format response. Wraps with `withErrorHandling`.
+
 ```typescript
 export const createUserHandler = withErrorHandling(async (req) => {
   const body = await req.json();
@@ -53,11 +57,13 @@ export const createUserHandler = withErrorHandling(async (req) => {
 ```
 
 ### Service Layer — `src/_services/`
+
 **Responsibility:** Business logic and orchestration. Validates business rules, calls repositories.
+
 ```typescript
 export class UserService {
   async createUser(input: CreateUserInput): Promise<User> {
-    const email = validateEmail(input.email);          // from lib
+    const email = validateEmail(input.email); // from lib
     const existing = await userRepository.findByEmail(email);
     if (existing) throw AppError.conflict('User already exists');
     return userRepository.create({ email, name: input.name });
@@ -66,7 +72,9 @@ export class UserService {
 ```
 
 ### Repository Layer — `src/_repositories/`
+
 **Responsibility:** Data access via Prisma. Returns typed entities.
+
 ```typescript
 export class UserRepository {
   async findById(id: string): Promise<User | null> {
@@ -79,20 +87,21 @@ export class UserRepository {
 ```
 
 ### Utilities Layer — `src/lib/`
+
 **Responsibility:** Cross-cutting utilities used by all layers. No dependencies on other layers.
 
-| File | Purpose |
-|---|---|
-| `types.ts` | Shared TypeScript interfaces |
-| `errors.ts` | `AppError` class, error codes |
-| `constants.ts` | App-wide constants (pagination, limits) |
-| `helpers.ts` | `createSuccessResponse()`, ID generation |
-| `validation.ts` | Input validators (`validateEmail`, etc.) |
-| `auth.ts` | NextAuth configuration |
-| `queryClient.ts` | React Query client defaults |
-| `stores/` | Zustand state stores |
-| `schemas/` | Zod validation schemas |
-| `server/middleware.ts` | `withErrorHandling` wrapper |
+| File                   | Purpose                                  |
+| ---------------------- | ---------------------------------------- |
+| `types.ts`             | Shared TypeScript interfaces             |
+| `errors.ts`            | `AppError` class, error codes            |
+| `constants.ts`         | App-wide constants (pagination, limits)  |
+| `helpers.ts`           | `createSuccessResponse()`, ID generation |
+| `validation.ts`        | Input validators (`validateEmail`, etc.) |
+| `auth.ts`              | NextAuth configuration                   |
+| `queryClient.ts`       | React Query client defaults              |
+| `stores/`              | Zustand state stores                     |
+| `schemas/`             | Zod validation schemas                   |
+| `server/middleware.ts` | `withErrorHandling` wrapper              |
 
 ## Data Flow: Create User (Example)
 
@@ -154,20 +163,20 @@ All API responses follow this contract:
 `AppError` (in `src/lib/errors.ts`) is the canonical error class. Every layer throws `AppError`; `withErrorHandling` converts it to the correct HTTP response:
 
 ```typescript
-throw AppError.notFound('User');       // → 404
+throw AppError.notFound('User'); // → 404
 throw AppError.conflict('Email taken'); // → 409
-throw AppError.unauthorized();          // → 401
-throw AppError.badRequest('...');       // → 400
+throw AppError.unauthorized(); // → 401
+throw AppError.badRequest('...'); // → 400
 ```
 
 ## Caching Strategy
 
-| Data | Strategy |
-|---|---|
-| User list | React Query, 5-min stale, revalidated after mutations |
-| Static pages | Next.js default or `use cache` directive |
-| CV uploads | No cache — always fresh |
-| Session | NextAuth session cookie |
+| Data         | Strategy                                              |
+| ------------ | ----------------------------------------------------- |
+| User list    | React Query, 5-min stale, revalidated after mutations |
+| Static pages | Next.js default or `use cache` directive              |
+| CV uploads   | No cache — always fresh                               |
+| Session      | NextAuth session cookie                               |
 
 ## Database Schema
 
@@ -176,6 +185,7 @@ Managed with Prisma. Schema: `prisma/schema.prisma`. Migrations: `prisma/migrati
 Key models: `User`, `Candidate`, `Cv`.
 
 Run migrations:
+
 ```bash
 npx prisma migrate deploy    # production
 npx prisma migrate dev       # development (also generates client)

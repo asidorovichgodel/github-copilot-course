@@ -26,15 +26,19 @@ The file follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+
 - ...
 
 ### Changed
+
 - ...
 
 ### Fixed
+
 - ...
 
 ### Removed
+
 - ...
 ```
 

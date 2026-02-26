@@ -34,7 +34,7 @@ export function ThemeSwitcher() {
 ```
 
 ```typescript
-import { loginSchema, validateFormData } from "@/lib/schemas";
+import { loginSchema, validateFormData } from '@/lib/schemas';
 
 const result = validateFormData(loginSchema, formData);
 if (!result.success) {

@@ -17,6 +17,7 @@ This codebase is designed to work well with AI agents (assistants and autonomic 
 - All responses use the shared `ApiResponse<T>` shape from `src/lib/types.ts`
 
 Agents can:
+
 - Add new entities by following the patterns for `users` routes and handlers
 - Add new endpoints that reuse existing `AppError`, `helpers`, and `validation` utilities
 
@@ -26,6 +27,7 @@ Agents can:
 - Each service encapsulates a domain: `UserService`, `CvService`, `AuthService`, etc.
 
 Agents should:
+
 - Put new domain logic into services rather than route files
 - Reuse existing validation and error types
 
@@ -35,6 +37,7 @@ Agents should:
 - Repositories hide Prisma details and expose typed operations
 
 Agents should:
+
 - Add new repository methods instead of querying Prisma directly from services
 - Keep DB access limited to this layer
 
@@ -44,6 +47,7 @@ Agents should:
 - Barrel exports (`src/lib/index.ts`, `src/lib/stores/index.ts`, `src/lib/schemas/index.ts`) simplify imports
 
 Agents should:
+
 - Prefer barrel exports when importing utilities
 - Keep new cross-cutting utilities in `src/lib/`
 
@@ -80,6 +84,7 @@ Paginated responses wrap `data` as:
 - Form helpers `validateFormData` / `validateFormDataAsync` centralize error mapping
 
 Agents should:
+
 - Extend or add schemas in `src/lib/schemas/` for new forms and APIs
 - Use these helpers for consistent error shapes
 
@@ -89,6 +94,7 @@ Agents should:
 - One store for global UI (`useAppStore`), one for forms (`useFormStore`)
 
 Agents should:
+
 - Reuse these stores for global flags (e.g., loading indicators, theme)
 - Create new stores only when a distinct domain warrants it
 

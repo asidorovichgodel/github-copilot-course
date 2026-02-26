@@ -68,9 +68,7 @@ export function UsersList() {
         <div key={user.id}>{user.name}</div>
       ))}
       <button
-        onClick={() =>
-          createUser.mutate({ name: 'John', email: 'john@example.com' })
-        }
+        onClick={() => createUser.mutate({ name: 'John', email: 'john@example.com' })}
         disabled={createUser.isPending}
       >
         Create User

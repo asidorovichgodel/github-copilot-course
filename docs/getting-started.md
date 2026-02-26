@@ -2,13 +2,13 @@
 
 ## Prerequisites
 
-| Requirement | Version |
-|---|---|
-| Node.js | 18.17 or later |
-| npm / yarn | Latest stable |
-| Git | Any recent version |
-| GitHub Copilot subscription | Required |
-| VS Code | Recommended |
+| Requirement                 | Version            |
+| --------------------------- | ------------------ |
+| Node.js                     | 18.17 or later     |
+| npm / yarn                  | Latest stable      |
+| Git                         | Any recent version |
+| GitHub Copilot subscription | Required           |
+| VS Code                     | Recommended        |
 
 ## Installation
 
@@ -35,30 +35,30 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Available Commands
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Start development server (Turbopack) |
-| `npm run build` | Production build |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Auto-fix lint issues |
-| `npm run format` | Format with Prettier |
-| `npm run format:check` | Check formatting |
-| `npm run type-check` | TypeScript type check |
-| `npm test` | Run unit tests (Jest) |
-| `npm run test:watch` | Tests in watch mode |
-| `npm run test:coverage` | Coverage report |
-| `npm run e2e` | Run E2E tests (Playwright) |
-| `npm run audit` | Security vulnerability scan |
+| Command                 | Purpose                              |
+| ----------------------- | ------------------------------------ |
+| `npm run dev`           | Start development server (Turbopack) |
+| `npm run build`         | Production build                     |
+| `npm start`             | Start production server              |
+| `npm run lint`          | Run ESLint                           |
+| `npm run lint:fix`      | Auto-fix lint issues                 |
+| `npm run format`        | Format with Prettier                 |
+| `npm run format:check`  | Check formatting                     |
+| `npm run type-check`    | TypeScript type check                |
+| `npm test`              | Run unit tests (Jest)                |
+| `npm run test:watch`    | Tests in watch mode                  |
+| `npm run test:coverage` | Coverage report                      |
+| `npm run e2e`           | Run E2E tests (Playwright)           |
+| `npm run audit`         | Security vulnerability scan          |
 
 ## E2E Test Environment
 
 E2E tests are split into two groups:
 
-| Group | Files | Default |
-|---|---|---|
+| Group            | Files                                | Default |
+| ---------------- | ------------------------------------ | ------- |
 | Public (no auth) | `sign-in.spec.ts`, `sign-up.spec.ts` | Enabled |
-| Authenticated | `*.auth.spec.ts`, `auth.setup.ts` | Skipped |
+| Authenticated    | `*.auth.spec.ts`, `auth.setup.ts`    | Skipped |
 
 To enable authenticated tests:
 

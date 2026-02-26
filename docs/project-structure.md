@@ -104,34 +104,38 @@ project-root/
 
 ## "What Goes Where" Quick Reference
 
-| Need | Location | Example |
-|---|---|---|
-| TypeScript types | `src/lib/types.ts` | `User`, `ApiResponse<T>` |
-| Error classes | `src/lib/errors.ts` | `AppError.notFound('User')` |
-| Constants | `src/lib/constants.ts` | `PAGINATION.MAX_LIMIT` |
-| Helper functions | `src/lib/helpers.ts` | `createSuccessResponse(data)` |
-| Input validation | `src/lib/validation.ts` | `validateEmail(email)` |
-| Zod schemas | `src/lib/schemas/` | `loginSchema`, `userRegistrationSchema` |
-| Zustand stores | `src/lib/stores/` | `useAppStore`, `useFormStore` |
-| Server middleware | `src/lib/server/` | `withErrorHandling(handler)` |
-| Business logic | `src/_services/` | `userService.createUser(input)` |
-| Database queries | `src/_repositories/` | `userRepository.findById(id)` |
-| API handlers | `src/app/api/(_api)/_lib/` | `getUsersHandler`, `createUserHandler` |
-| Route definitions | `src/app/api/*/route.ts` | `export async function GET(req)` |
-| Server Actions | `src/app/_actions/` | Form mutations |
-| Client UI state | `src/lib/stores/` | `useAppStore` |
-| API client hooks | `src/hooks/` | `useUsers()`, `useCreateUser()` |
+| Need              | Location                   | Example                                 |
+| ----------------- | -------------------------- | --------------------------------------- |
+| TypeScript types  | `src/lib/types.ts`         | `User`, `ApiResponse<T>`                |
+| Error classes     | `src/lib/errors.ts`        | `AppError.notFound('User')`             |
+| Constants         | `src/lib/constants.ts`     | `PAGINATION.MAX_LIMIT`                  |
+| Helper functions  | `src/lib/helpers.ts`       | `createSuccessResponse(data)`           |
+| Input validation  | `src/lib/validation.ts`    | `validateEmail(email)`                  |
+| Zod schemas       | `src/lib/schemas/`         | `loginSchema`, `userRegistrationSchema` |
+| Zustand stores    | `src/lib/stores/`          | `useAppStore`, `useFormStore`           |
+| Server middleware | `src/lib/server/`          | `withErrorHandling(handler)`            |
+| Business logic    | `src/_services/`           | `userService.createUser(input)`         |
+| Database queries  | `src/_repositories/`       | `userRepository.findById(id)`           |
+| API handlers      | `src/app/api/(_api)/_lib/` | `getUsersHandler`, `createUserHandler`  |
+| Route definitions | `src/app/api/*/route.ts`   | `export async function GET(req)`        |
+| Server Actions    | `src/app/_actions/`        | Form mutations                          |
+| Client UI state   | `src/lib/stores/`          | `useAppStore`                           |
+| API client hooks  | `src/hooks/`               | `useUsers()`, `useCreateUser()`         |
 
 ## Key Conventions
 
 ### Private Folders (`_prefix`)
+
 Folders prefixed with `_` are **non-routable implementation details**:
+
 - `src/_services/` — business logic, never imported by route files directly
 - `src/_repositories/` — data access, only imported by services
 - `src/app/api/(_api)/` — API handlers colocated near routes
 
 ### Route Groups (`(name)`)
+
 Parenthesized folders are omitted from URLs:
+
 - `(auth)/` — groups login/signup pages without affecting URLs
 - `(site)/` — groups public pages
 - `(_api)/` — organizes API handlers; URL `/api/users` still works
