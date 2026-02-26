@@ -33,17 +33,14 @@ export const useAppStore = create<AppState>()(
       (set) => ({
         ...initialState,
 
-        setIsLoading: (loading: boolean) =>
-          set({ isLoading: loading }, false, 'setIsLoading'),
+        setIsLoading: (loading: boolean) => set({ isLoading: loading }, false, 'setIsLoading'),
 
         toggleSidebar: () =>
           set((state) => ({ isSidebarOpen: !state.isSidebarOpen }), false, 'toggleSidebar'),
 
-        setTheme: (theme: 'light' | 'dark') =>
-          set({ theme }, false, 'setTheme'),
+        setTheme: (theme: 'light' | 'dark') => set({ theme }, false, 'setTheme'),
 
-        resetAppState: () =>
-          set(initialState, false, 'resetAppState'),
+        resetAppState: () => set(initialState, false, 'resetAppState'),
       }),
       {
         name: 'app-store', // localStorage key

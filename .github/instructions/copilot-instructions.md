@@ -5,6 +5,7 @@ This is the main instruction file for GitHub Copilot in this repository. Follow 
 ## Project Overview
 
 This is a GitHub Copilot course repository focused on teaching effective AI-assisted development. The project emphasizes:
+
 - **Education**: Clear, well-documented examples
 - **Best Practices**: Following industry-standard patterns
 - **Accessibility**: Beginner-friendly content with progressive complexity
@@ -13,11 +14,14 @@ This is a GitHub Copilot course repository focused on teaching effective AI-assi
 ## Quick Reference
 
 For detailed instructions by category, see:
+
 - [nextjs.instructions.md](nextjs.instructions.md) - Next.js best practices and patterns (App Router, caching, components)
 - [code-style.instructions.md](code-style.instructions.md) - Code formatting and style guidelines
 - [documentation.instructions.md](documentation.instructions.md) - Documentation standards
 - [testing.instructions.md](testing.instructions.md) - Testing patterns and practices
-- [security.instructions.md](security.instructions.md) - Security best practices
+- [security.instructions.md](security.instructions.md) - Security best practices (input validation, secrets, XSS, CSRF, rate limiting)
+- [database.instructions.md](database.instructions.md) - Database conventions, schema design, and Prisma/SQL patterns
+- [cicd.instructions.md](cicd.instructions.md) - CI/CD pipelines and GitHub Actions best practices
 - [pr-review.instructions.md](pr-review.instructions.md) - PR creation and review guidelines
 
 > **Package Versions & API Docs**: Always use **Context7 MCP** (`use context7`) when installing, updating, or asking about any npm package. See [Package Management](#package-management) below.
@@ -50,7 +54,9 @@ Prompts are templates for common development tasks invoked with `#` in Copilot C
 
 - **#add-shadcn-component** ([add-shadcn-component.prompt.md](../prompts/add-shadcn-component.prompt.md)) - Add shadcn/ui components to the project with proper configuration and styling alignment.
 
-**Usage:** Type `#create-nextjs-page` or `#add-shadcn-component` in Copilot Chat, followed by your specific request.
+- **#update-changelog** ([update-changelog.prompt.md](../prompts/update-changelog.prompt.md)) - Draft a new `CHANGELOG.md` entry based on recent git history. Inspects commits, determines the correct semver bump, and writes a properly formatted entry following Keep a Changelog conventions.
+
+**Usage:** Type `#create-nextjs-page`, `#add-shadcn-component`, or `#update-changelog` in Copilot Chat, followed by your specific request.
 
 ## Build & Test Commands
 
@@ -142,10 +148,7 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 │   └── ...
 │
 ├── public/               # Static assets
-├── PROJECT_STRUCTURE.md  # Quick reference guide
-├── VERCEL_STRUCTURE.md   # Detailed structure documentation
-├── MIGRATION_GUIDE.md    # What changed from previous structure
-├── docs/                 # Project documentation
+├── docs/                 # Project documentation (see docs/ for the full guide)
 ├── lessons/              # Lesson content markdown files
 ├── exercises/            # Practice exercises
 └── tests/                # Test files (collocated with source)
@@ -161,78 +164,69 @@ The project follows [Vercel's recommended Next.js structure](https://nextjs.org/
 ## Code Generation Principles
 
 ### 1. Educational Value
+
 - Prioritize clarity over cleverness
 - Add explanatory comments for complex concepts
 - Provide context and reasoning
 - Show multiple approaches when helpful
 
 ### 2. Production Quality
+
 - Write code that's ready for real-world use
 - Include proper error handling
 - Add input validation
 - Consider edge cases
+- See [security.instructions.md](security.instructions.md) for security guidelines
+- See [testing.instructions.md](testing.instructions.md) for testing standards
 
 ### 3. Consistency
+
 - Follow existing patterns in the codebase
-- Use consistent naming conventions
+- Use consistent naming conventions — see [code-style.instructions.md](code-style.instructions.md)
 - Maintain uniform code style
 - Respect project structure
 
 ### 4. Documentation
+
 - Document public APIs
 - Explain non-obvious logic
 - Include usage examples
 - Keep comments up-to-date
+- See [documentation.instructions.md](documentation.instructions.md) for detailed documentation standards
 
 ## Language Preferences
 
-### JavaScript/TypeScript
-- Use TypeScript for type safety
-- Prefer modern ES6+ syntax
-- Use async/await over callbacks
-- 2-space indentation
+> Detailed code style rules (naming conventions, formatting, async patterns, error handling) are defined in [code-style.instructions.md](code-style.instructions.md). For Next.js-specific patterns (App Router, Server/Client Components, data fetching, caching, etc.), refer to [nextjs.instructions.md](nextjs.instructions.md).
 
-### Markdown
-- Follow CommonMark spec
-- Use relative links for internal files
-- Always specify language for code blocks
-- Keep lines under 120 characters for readability
+### Key Defaults
 
-> **Note**: For Next.js-specific patterns (App Router, Server/Client Components, data fetching, caching, etc.), refer to [nextjs.instructions.md](nextjs.instructions.md)
+- **TypeScript** for all JS/TS files — strict types, modern ES6+, async/await, 2-space indentation
+- **Markdown**: CommonMark spec, relative links, language tags on code blocks, max 120 chars/line
 
 ## Conventions
 
 ### File Naming
-- Use `kebab-case` for general files: `lesson-01-intro.md`
-- Use `PascalCase` for components: `UserCard.tsx`
-- Use `camelCase` for utilities/services: `userService.ts`
-- Use `snake_case` for Python: `user_service.py`
-- Test files: `*.test.ts`, `*.test.tsx` or `test_*.py`
-- For Next.js-specific conventions (pages, layouts, etc.), see [nextjs.instructions.md](nextjs.instructions.md)
+
+> Full naming conventions are defined in [code-style.instructions.md](code-style.instructions.md) and [nextjs.instructions.md](nextjs.instructions.md).
+
+- **General files**: `kebab-case` (e.g., `lesson-01-intro.md`)
+- **Components**: `PascalCase` (e.g., `UserCard.tsx`)
+- **Utilities/services**: `camelCase` (e.g., `userService.ts`)
+- **Test files**: `*.test.ts` or `*.test.tsx`
 
 ### Import Order
+
+> See [code-style.instructions.md](code-style.instructions.md) for import ordering rules with examples.
+
 1. External dependencies
 2. Internal modules
 3. Types/interfaces
 4. Relative imports
 
-```typescript
-// External
-import React from 'react';
-import { useState } from 'react';
-
-// Internal
-import { UserService } from '@/services/UserService';
-
-// Types
-import type { User } from '@/types';
-
-// Relative
-import { Button } from './Button';
-```
-
 ### Commit Messages
+
 Follow Conventional Commits format:
+
 ```
 type(scope): subject
 
@@ -245,31 +239,12 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ## Error Handling
 
-### Always Handle Errors
-```typescript
-// Good
-async function fetchData() {
-  try {
-    const response = await fetch('/api/data');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to fetch data:', error);
-    throw error; // Re-throw after logging
-  }
-}
-```
+> Detailed error handling patterns and examples are defined in [code-style.instructions.md](code-style.instructions.md) and [security.instructions.md](security.instructions.md).
 
-### Provide Helpful Error Messages
-```typescript
-// Good: Specific, actionable
-throw new Error(`User with ID ${userId} not found. Please check the ID and try again.`);
-
-// Bad: Generic, unhelpful
-throw new Error('Error');
-```
+- Always handle errors explicitly with try/catch
+- Provide meaningful, actionable error messages
+- Log errors with context; avoid silent failures
+- Fail fast for invalid inputs
 
 ## Performance Considerations
 
@@ -290,6 +265,7 @@ throw new Error('Error');
 ## Notes for Contributors
 
 When updating this file:
+
 1. Keep instructions concise and actionable
 2. Provide examples for clarity
 3. Update related instruction files

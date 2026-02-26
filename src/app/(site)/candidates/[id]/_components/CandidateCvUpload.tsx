@@ -7,13 +7,7 @@ import { Upload } from 'lucide-react';
 import { uploadCv } from '@/app/_actions/cvActions';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
 interface CandidateCvUploadProps {

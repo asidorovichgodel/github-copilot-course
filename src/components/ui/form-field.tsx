@@ -17,11 +17,11 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
     const fieldId = id || props.name;
 
     return (
-      <div className='space-y-1'>
+      <div className="space-y-1">
         {label && (
-          <label htmlFor={fieldId} className='block text-sm font-medium text-gray-700'>
+          <label htmlFor={fieldId} className="block text-sm font-medium text-gray-700">
             {label}
-            {isRequired && <span className='text-red-500 ml-1'>*</span>}
+            {isRequired && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
         <input
@@ -37,8 +37,8 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             ${className || ''}
           `}
         />
-        {error && <p className='text-sm text-red-500'>{error.message}</p>}
-        {helperText && !error && <p className='text-sm text-gray-500'>{helperText}</p>}
+        {error && <p className="text-sm text-red-500">{error.message}</p>}
+        {helperText && !error && <p className="text-sm text-gray-500">{helperText}</p>}
       </div>
     );
   },
@@ -73,7 +73,7 @@ export const FormError: React.FC<FormErrorProps> = ({ message, className }) => {
   return (
     <div
       className={`p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700 ${className || ''}`}
-      role='alert'
+      role="alert"
     >
       {message}
     </div>

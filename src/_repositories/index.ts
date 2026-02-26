@@ -11,4 +11,3 @@ export {
   type CandidateWithExperiences,
   type ExperienceRecord,
 } from './CandidateRepository';
-

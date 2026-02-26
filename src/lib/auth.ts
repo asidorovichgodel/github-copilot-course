@@ -24,10 +24,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await authService.validateCredentials(
-          parsed.data.email,
-          parsed.data.password,
-        );
+        const user = await authService.validateCredentials(parsed.data.email, parsed.data.password);
 
         if (!user) {
           return null;

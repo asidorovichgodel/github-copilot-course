@@ -117,9 +117,7 @@ describe('RegistrationForm', () => {
 
     // Assert
     await waitFor(() => {
-      expect(mockToast.error).toHaveBeenCalledWith(
-        expect.stringContaining('Registration failed'),
-      );
+      expect(mockToast.error).toHaveBeenCalledWith(expect.stringContaining('Registration failed'));
     });
   });
 

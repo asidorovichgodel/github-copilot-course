@@ -10,9 +10,7 @@ import { userRegistrationSchema, type UserRegistrationFormData } from '@/lib/sch
  * Returns { error } on failure so the client form can display it,
  * or an empty object on success so the client can redirect.
  */
-export const registerUser = async (
-  data: UserRegistrationFormData,
-): Promise<{ error?: string }> => {
+export const registerUser = async (data: UserRegistrationFormData): Promise<{ error?: string }> => {
   const parsed = userRegistrationSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message };
@@ -28,6 +26,8 @@ export const registerUser = async (
 
     return {};
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Registration failed. Please try again.' };
+    return {
+      error: error instanceof Error ? error.message : 'Registration failed. Please try again.',
+    };
   }
 };

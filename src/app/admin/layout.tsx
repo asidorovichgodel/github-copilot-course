@@ -56,7 +56,9 @@ export default async function AdminLayout({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-xs uppercase tracking-[0.35em] text-sidebar-foreground/60">Admin</p>
+                  <p className="text-xs uppercase tracking-[0.35em] text-sidebar-foreground/60">
+                    Admin
+                  </p>
                   <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-destructive">
                     <ShieldCheck className="h-2.5 w-2.5" />
                     Active

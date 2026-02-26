@@ -65,9 +65,7 @@ export class CvService {
     const profile = await llmService.extractCandidateProfile(rawText);
 
     // 4. Resolve candidate: look up by candidateId, email, or by linked user
-    let existingCandidate = candidateId
-      ? await candidateRepository.findById(candidateId)
-      : null;
+    let existingCandidate = candidateId ? await candidateRepository.findById(candidateId) : null;
 
     if (!existingCandidate && profile.email) {
       existingCandidate = await candidateRepository.findByEmail(profile.email);

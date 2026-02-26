@@ -16,7 +16,7 @@ test.describe('Sign-up page', () => {
     await expect(page.getByLabel('Email')).toBeVisible();
     await expect(page.getByLabel(/^Password/)).toBeVisible();
     await expect(page.getByLabel(/Confirm Password/)).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Register' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Create account' })).toBeVisible();
   });
 
   test('should show a link to the sign-in page', async ({ page }) => {
@@ -27,10 +27,10 @@ test.describe('Sign-up page', () => {
   });
 
   test('should show validation errors when submitting an empty form', async ({ page }) => {
-    await page.getByRole('button', { name: 'Register' }).click();
+    await page.getByRole('button', { name: 'Create account' }).click();
 
     // At least one error should appear
-    await expect(page.locator('.text-red-500').first()).toBeVisible();
+    await expect(page.locator('.text-destructive').first()).toBeVisible();
   });
 
   test('should show an error when passwords do not match', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('Sign-up page', () => {
     await page.getByLabel('Email').fill('john@example.com');
     await page.getByLabel(/^Password/).fill('Password1!');
     await page.getByLabel(/Confirm Password/).fill('Different1!');
-    await page.getByRole('button', { name: 'Register' }).click();
+    await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText(/passwords do not match/i)).toBeVisible();
   });
@@ -70,13 +70,13 @@ test.describe('Sign-up page', () => {
 
   test('should clear a field error when the user starts typing a correction', async ({ page }) => {
     // Trigger validation
-    await page.getByRole('button', { name: 'Register' }).click();
-    await expect(page.locator('.text-red-500').first()).toBeVisible();
+    await page.getByRole('button', { name: 'Create account' }).click();
+    await expect(page.locator('.text-destructive').first()).toBeVisible();
 
     // Correct the first name field
     await page.getByLabel('First Name').fill('John');
 
     // The first name error should be gone
-    await expect(page.getByLabel('First Name').locator('~ .text-red-500')).not.toBeVisible();
+    await expect(page.getByLabel('First Name').locator('~ .text-destructive')).not.toBeVisible();
   });
 });

@@ -9,13 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { requireAdminRole } from '@/lib/server/roleMiddleware';
@@ -37,9 +31,7 @@ export default async function AdminCandidatesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Candidates</h1>
-        <p className="mt-2 text-muted-foreground">
-          All candidates extracted from uploaded CVs.
-        </p>
+        <p className="mt-2 text-muted-foreground">All candidates extracted from uploaded CVs.</p>
       </div>
 
       <Card>

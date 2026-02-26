@@ -12,13 +12,7 @@ import {
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { requireAuth } from '@/lib/server/roleMiddleware';
 import { prisma } from '@/lib/server/prisma';
 
@@ -57,6 +51,7 @@ async function getCandidateStats() {
   const skillFrequency: Record<string, number> = {};
   for (const c of allCandidates) {
     for (const skill of c.skills) {
+      // eslint-disable-next-line security/detect-object-injection
       skillFrequency[skill] = (skillFrequency[skill] ?? 0) + 1;
     }
   }
@@ -69,6 +64,7 @@ async function getCandidateStats() {
   const techFrequency: Record<string, number> = {};
   for (const c of allCandidates) {
     for (const tech of c.technologies) {
+      // eslint-disable-next-line security/detect-object-injection
       techFrequency[tech] = (techFrequency[tech] ?? 0) + 1;
     }
   }
@@ -147,9 +143,7 @@ export default async function OverviewPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Overview</h1>
-          <p className="mt-1 text-muted-foreground">
-            Candidate pipeline at a glance.
-          </p>
+          <p className="mt-1 text-muted-foreground">Candidate pipeline at a glance.</p>
         </div>
         <Button asChild>
           <Link href="/candidates">
@@ -164,9 +158,7 @@ export default async function OverviewPage() {
         {statCards.map(({ label, value, icon: Icon, description }) => (
           <Card key={label}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {label}
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
               <Icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -284,5 +276,3 @@ export default async function OverviewPage() {
     </div>
   );
 }
-
-

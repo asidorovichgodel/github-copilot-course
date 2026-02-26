@@ -72,39 +72,31 @@ describe('CvService', () => {
 
   describe('validateUpload()', () => {
     it('should not throw for a valid PDF under size limit', () => {
-      expect(() =>
-        cvService.validateUpload('application/pdf', 1 * 1024 * 1024),
-      ).not.toThrow();
+      expect(() => cvService.validateUpload('application/pdf', 1 * 1024 * 1024)).not.toThrow();
     });
 
     it('should throw VALIDATION_ERROR when file type is not PDF', () => {
-      expect(() =>
-        cvService.validateUpload('image/jpeg', 1 * 1024 * 1024),
-      ).toThrow(AppError);
+      expect(() => cvService.validateUpload('image/jpeg', 1 * 1024 * 1024)).toThrow(AppError);
 
-      expect(() =>
-        cvService.validateUpload('image/jpeg', 1 * 1024 * 1024),
-      ).toThrow('Only PDF files are allowed');
+      expect(() => cvService.validateUpload('image/jpeg', 1 * 1024 * 1024)).toThrow(
+        'Only PDF files are allowed',
+      );
     });
 
     it('should throw VALIDATION_ERROR when file size exceeds 5MB', () => {
       const sixMb = 6 * 1024 * 1024;
 
-      expect(() =>
-        cvService.validateUpload('application/pdf', sixMb),
-      ).toThrow(AppError);
+      expect(() => cvService.validateUpload('application/pdf', sixMb)).toThrow(AppError);
 
-      expect(() =>
-        cvService.validateUpload('application/pdf', sixMb),
-      ).toThrow('File exceeds the 5MB limit');
+      expect(() => cvService.validateUpload('application/pdf', sixMb)).toThrow(
+        'File exceeds the 5MB limit',
+      );
     });
 
     it('should accept a file exactly at the 5MB limit', () => {
       const fiveMb = 5 * 1024 * 1024;
 
-      expect(() =>
-        cvService.validateUpload('application/pdf', fiveMb),
-      ).not.toThrow();
+      expect(() => cvService.validateUpload('application/pdf', fiveMb)).not.toThrow();
     });
   });
 

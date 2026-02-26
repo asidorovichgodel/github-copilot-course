@@ -1,0 +1,142 @@
+name: Configure Branch Protection
+
+# ============================================================================
+# Branch Protection Setup
+#
+# Configures branch protection rules for `develop` and `main` so that
+# every pull request must:
+#   1. Pass ALL required CI status checks (lint, build, tests, security)
+#   2. Have at least ONE approved review before it can be merged
+#
+# Trigger:
+#   - workflow_dispatch  – run manually from the Actions tab whenever the
+#                          rules need to be applied or refreshed (e.g. after
+#                          a repository transfer or initial setup)
+#
+# Requirements:
+#   - The caller must have "Admin" or "Maintain" permissions on the repo.
+#   - GITHUB_TOKEN is automatically provided by Actions; no extra secrets are
+#     needed as long as the token's "Administration" permission is set to
+#     "Read and write" in the repository's Actions settings.
+# ============================================================================
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview the API payload without applying changes'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+  administration: write # Required to update branch protection rules
+
+jobs:
+  protect-branches:
+    name: Apply Branch Protection Rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    strategy:
+      matrix:
+        # Apply the same ruleset to both long-lived integration branches
+        branch: [develop, main]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ------------------------------------------------------------------
+      # Build the branch-protection payload.
+      #
+      # Required status checks — must match the `name:` fields defined in
+      # ci.yml and pre-commit.yml exactly.
+      #
+      # Required reviews — enforce at least 1 approving review and
+      # automatically dismiss stale approvals when new commits are pushed.
+      # ------------------------------------------------------------------
+      - name: Build protection payload
+        id: payload
+        run: |
+          PAYLOAD=$(cat <<'EOF'
+          {
+            "required_status_checks": {
+              "strict": true,
+              "contexts": [
+                "ESLint & Prettier",
+                "Lint & Format Check",
+                "Build Application",
+                "Unit & Integration Tests (Jest + RTL)",
+                "E2E Tests (Playwright / Chromium)",
+                "Security Scan (npm audit)"
+              ]
+            },
+            "enforce_admins": true,
+            "required_pull_request_reviews": {
+              "dismiss_stale_reviews": true,
+              "require_code_owner_reviews": true,
+              "required_approving_review_count": 1,
+              "require_last_push_approval": true
+            },
+            "restrictions": null,
+            "allow_force_pushes": false,
+            "allow_deletions": false,
+            "block_creations": false,
+            "required_conversation_resolution": true,
+            "lock_branch": false
+          }
+          EOF
+          )
+          # Compact the JSON to a single line so it can be stored as an output
+          echo "json=$(echo "$PAYLOAD" | jq -c .)" >> "$GITHUB_OUTPUT"
+
+      - name: Preview payload (dry-run)
+        if: inputs.dry_run == true
+        run: |
+          echo "### Dry-run – payload that would be applied to \`${{ matrix.branch }}\`"
+          echo '${{ steps.payload.outputs.json }}' | jq .
+
+      # ------------------------------------------------------------------
+      # Apply the rules via the GitHub REST API.
+      # gh automatically uses GITHUB_TOKEN for authentication.
+      # ------------------------------------------------------------------
+      - name: Apply branch protection to ${{ matrix.branch }}
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/branches/${{ matrix.branch }}/protection \
+            --input - <<< '${{ steps.payload.outputs.json }}'
+
+          echo "✅ Branch protection applied to \`${{ matrix.branch }}\`"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Branch Protection – ${{ matrix.branch }}" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            echo "**Mode:** Dry-run (no changes applied)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**Mode:** Applied" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Rule | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Required status checks | All CI jobs (lint, build, unit-tests, e2e-tests, security) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Up-to-date branch required | ✅ Yes |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Required approving reviews | ✅ 1 |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Dismiss stale reviews | ✅ Yes |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Require code owner review | ✅ Yes |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Require last-push approval | ✅ Yes |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Enforce on admins | ✅ Yes |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Allow force pushes | ❌ No |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Allow branch deletion | ❌ No |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Required conversation resolution | ✅ Yes |" >> "$GITHUB_STEP_SUMMARY"

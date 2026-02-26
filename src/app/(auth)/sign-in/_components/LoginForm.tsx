@@ -65,47 +65,47 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
-      <div className='grid gap-2'>
-        <label htmlFor='email' className='text-sm font-medium'>
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+      <div className="grid gap-2">
+        <label htmlFor="email" className="text-sm font-medium">
           Email
         </label>
         <Input
-          id='email'
-          type='email'
-          placeholder='name@example.com'
-          autoComplete='email'
+          id="email"
+          type="email"
+          placeholder="name@example.com"
+          autoComplete="email"
           disabled={isSubmitting}
           {...register('email')}
         />
         {errors.email?.message ? (
-          <p className='text-xs text-destructive'>{errors.email.message}</p>
+          <p className="text-xs text-destructive">{errors.email.message}</p>
         ) : null}
       </div>
 
-      <div className='grid gap-2'>
-        <div className='flex items-center'>
-          <label htmlFor='password' className='text-sm font-medium'>
+      <div className="grid gap-2">
+        <div className="flex items-center">
+          <label htmlFor="password" className="text-sm font-medium">
             Password
           </label>
-          <Link href='/forgot-password' className='ml-auto text-sm underline underline-offset-4'>
+          <Link href="/forgot-password" className="ml-auto text-sm underline underline-offset-4">
             Forgot your password?
           </Link>
         </div>
         <Input
-          id='password'
-          type='password'
-          placeholder='••••••••'
-          autoComplete='current-password'
+          id="password"
+          type="password"
+          placeholder="••••••••"
+          autoComplete="current-password"
           disabled={isSubmitting}
           {...register('password')}
         />
         {errors.password?.message ? (
-          <p className='text-xs text-destructive'>{errors.password.message}</p>
+          <p className="text-xs text-destructive">{errors.password.message}</p>
         ) : null}
       </div>
 
-      <Button type='submit' className='w-full' disabled={isSubmitting}>
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>

@@ -8,13 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { userEditSchema, type UserEditFormData } from '@/lib/schemas';
 import { updateUser } from '../_actions';
 
@@ -75,12 +69,7 @@ export const UserEditForm = ({ userId, defaultValues, roles }: UserEditFormProps
               <label htmlFor="firstName" className="block text-sm font-medium">
                 First Name
               </label>
-              <Input
-                id="firstName"
-                type="text"
-                disabled={isPending}
-                {...register('firstName')}
-              />
+              <Input id="firstName" type="text" disabled={isPending} {...register('firstName')} />
               {errors.firstName && (
                 <p className="text-xs text-destructive">{errors.firstName.message}</p>
               )}
@@ -89,12 +78,7 @@ export const UserEditForm = ({ userId, defaultValues, roles }: UserEditFormProps
               <label htmlFor="lastName" className="block text-sm font-medium">
                 Last Name
               </label>
-              <Input
-                id="lastName"
-                type="text"
-                disabled={isPending}
-                {...register('lastName')}
-              />
+              <Input id="lastName" type="text" disabled={isPending} {...register('lastName')} />
               {errors.lastName && (
                 <p className="text-xs text-destructive">{errors.lastName.message}</p>
               )}
@@ -104,15 +88,8 @@ export const UserEditForm = ({ userId, defaultValues, roles }: UserEditFormProps
             <label htmlFor="email" className="block text-sm font-medium">
               Email
             </label>
-            <Input
-              id="email"
-              type="email"
-              disabled={isPending}
-              {...register('email')}
-            />
-            {errors.email && (
-              <p className="text-xs text-destructive">{errors.email.message}</p>
-            )}
+            <Input id="email" type="email" disabled={isPending} {...register('email')} />
+            {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
           </div>
         </CardContent>
       </Card>

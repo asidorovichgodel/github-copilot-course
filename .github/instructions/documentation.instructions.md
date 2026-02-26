@@ -5,12 +5,14 @@ When generating documentation for this project, follow these guidelines:
 ## Markdown Files
 
 ### Structure
+
 - Start with a single H1 (`#`) title
 - Use proper header hierarchy (don't skip levels)
 - Include a table of contents for long documents
 - Keep paragraphs concise and scannable
 
 ### Code Examples
+
 - Always specify language for syntax highlighting
 - Keep examples minimal and focused
 - Add comments to explain non-obvious code
@@ -29,12 +31,14 @@ console.log(total); // Output: 30
 ```
 
 ### Lists
+
 - Use `-` for unordered lists
 - Use `1.` for ordered lists (auto-numbering)
 - Keep list items parallel in structure
 - Indent nested lists with 2 spaces
 
 ### Links
+
 - Use descriptive link text: `[GitHub Copilot docs](url)` not `[click here](url)`
 - Prefer relative links for internal files: `[Guide](../docs/guide.md)`
 - Open external links in context
@@ -44,15 +48,16 @@ console.log(total); // Output: 30
 ### Function Documentation
 
 **JavaScript/TypeScript (JSDoc):**
-```typescript
+
+````typescript
 /**
  * Calculates the total price of all items in the cart
- * 
+ *
  * @param items - Array of cart items with price property
  * @param discount - Optional discount percentage (0-100)
  * @returns Total price after applying discount
  * @throws {Error} If discount is invalid
- * 
+ *
  * @example
  * ```typescript
  * const total = calculateTotal([{ price: 100 }], 10);
@@ -62,23 +67,24 @@ console.log(total); // Output: 30
 function calculateTotal(items: CartItem[], discount = 0): number {
   // implementation
 }
-```
+````
 
 **Python (Docstrings):**
+
 ```python
 def calculate_total(items: list[CartItem], discount: float = 0.0) -> float:
     """Calculate the total price of all items in the cart.
-    
+
     Args:
         items: List of cart items with price attribute
         discount: Optional discount percentage (0.0-100.0)
-        
+
     Returns:
         Total price after applying discount
-        
+
     Raises:
         ValueError: If discount is not between 0 and 100
-        
+
     Example:
         >>> items = [CartItem(price=100)]
         >>> calculate_total(items, discount=10.0)
@@ -90,6 +96,7 @@ def calculate_total(items: list[CartItem], discount: float = 0.0) -> float:
 ## README Files
 
 ### Project README Structure
+
 1. **Title and Brief Description** - One sentence describing the project
 2. **Badges** (if applicable) - Build status, coverage, version
 3. **Table of Contents** - For longer READMEs
@@ -105,6 +112,7 @@ def calculate_total(items: list[CartItem], discount: float = 0.0) -> float:
 10. **Acknowledgments/Credits**
 
 ### Module/Package README
+
 - Explain the module's purpose
 - Show basic usage examples
 - Document public API
@@ -113,17 +121,20 @@ def calculate_total(items: list[CartItem], discount: float = 0.0) -> float:
 ## Inline Comments
 
 ### When to Comment
+
 - Complex algorithms or business logic
 - Non-obvious workarounds or hacks
 - TODO, FIXME, or HACK markers
 - Important assumptions or constraints
 
 ### When NOT to Comment
+
 - Obvious code that's self-explanatory
 - Redundant descriptions of what code does
 - Commented-out code (remove it)
 
 ### Comment Style
+
 ```typescript
 // Good: Explains WHY
 // Use binary search because dataset is pre-sorted

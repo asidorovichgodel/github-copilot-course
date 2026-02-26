@@ -1,0 +1,58 @@
+# CODEOWNERS
+#
+# Defines who must review pull requests for each part of the codebase.
+# GitHub requests a review from these owners whenever a matching file is
+# changed in a PR.  Combined with the branch protection rules configured
+# in .github/workflows/branch-protection.yml, this ensures:
+#
+#   ✅ At least 1 approving review before any PR can be merged
+#   ✅ The right people are automatically notified for each area
+#
+# Syntax: <pattern>  <owner> [<owner> ...]
+#   - Patterns follow .gitignore glob rules, last match wins.
+#   - Owners can be @username, @org/team, or user@email.com
+#   - Replace the placeholder owners below with real GitHub usernames or teams.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# ---------------------------------------------------------------------------
+# Default owner — catches everything not matched by a more specific rule.
+# This guarantees that every PR has at least one required reviewer.
+# ---------------------------------------------------------------------------
+*                               @your-org/team-leads
+
+# ---------------------------------------------------------------------------
+# CI/CD & DevOps
+# ---------------------------------------------------------------------------
+.github/                        @your-org/devops
+.github/workflows/              @your-org/devops
+.github/CODEOWNERS              @your-org/devops
+
+# ---------------------------------------------------------------------------
+# Application source
+# ---------------------------------------------------------------------------
+src/                            @your-org/frontend
+src/_repositories/              @your-org/backend
+src/_services/                  @your-org/backend
+src/app/api/                    @your-org/backend
+
+# ---------------------------------------------------------------------------
+# Database & migrations
+# ---------------------------------------------------------------------------
+prisma/                         @your-org/backend @your-org/dba
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+src/**/__tests__/               @your-org/qa
+e2e/                            @your-org/qa
+
+# ---------------------------------------------------------------------------
+# Configuration & tooling
+# ---------------------------------------------------------------------------
+package.json                    @your-org/devops @your-org/team-leads
+tsconfig.json                   @your-org/frontend
+next.config.ts                  @your-org/frontend
+eslint.config.mjs               @your-org/frontend
+jest.config.ts                  @your-org/qa
+playwright.config.ts            @your-org/qa

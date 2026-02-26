@@ -3,8 +3,12 @@ import { test, expect } from '@playwright/test';
 /**
  * E2E tests for the application sidebar navigation and UserNav dropdown.
  * Requires an authenticated session.
+ *
+ * SKIPPED: These tests require a running PostgreSQL database seeded with an
+ * admin user. Configure the test environment first —
+ * see "E2E Test Environment Setup" in README.md.
  */
-test.describe('Sidebar navigation (authenticated)', () => {
+test.describe.skip('Sidebar navigation (authenticated)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
@@ -20,7 +24,10 @@ test.describe('Sidebar navigation (authenticated)', () => {
   });
 
   test('should navigate to Candidates page via sidebar link', async ({ page }) => {
-    await page.getByRole('link', { name: /candidates/i }).first().click();
+    await page
+      .getByRole('link', { name: /candidates/i })
+      .first()
+      .click();
 
     await expect(page).toHaveURL('/candidates');
     await expect(page.getByRole('heading', { name: 'Candidates' })).toBeVisible();
@@ -41,14 +48,17 @@ test.describe('Sidebar navigation (authenticated)', () => {
   });
 });
 
-test.describe('UserNav dropdown (authenticated)', () => {
+test.describe.skip('UserNav dropdown (authenticated)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
   test('should open the user dropdown when the avatar button is clicked', async ({ page }) => {
     // UserNav renders a SidebarMenuButton with an Avatar inside
-    const userMenuButton = page.getByRole('button').filter({ has: page.locator('[data-slot="avatar-fallback"]') }).first();
+    const userMenuButton = page
+      .getByRole('button')
+      .filter({ has: page.locator('[data-slot="avatar-fallback"]') })
+      .first();
     await userMenuButton.click();
 
     // Dropdown should show Profile and Sign out items
@@ -57,7 +67,10 @@ test.describe('UserNav dropdown (authenticated)', () => {
   });
 
   test('should navigate to /profile via the dropdown Profile link', async ({ page }) => {
-    const userMenuButton = page.getByRole('button').filter({ has: page.locator('[data-slot="avatar-fallback"]') }).first();
+    const userMenuButton = page
+      .getByRole('button')
+      .filter({ has: page.locator('[data-slot="avatar-fallback"]') })
+      .first();
     await userMenuButton.click();
 
     await page.getByRole('menuitem', { name: /profile/i }).click();
@@ -66,7 +79,10 @@ test.describe('UserNav dropdown (authenticated)', () => {
   });
 
   test('should sign out and redirect to sign-in when Sign out is clicked', async ({ page }) => {
-    const userMenuButton = page.getByRole('button').filter({ has: page.locator('[data-slot="avatar-fallback"]') }).first();
+    const userMenuButton = page
+      .getByRole('button')
+      .filter({ has: page.locator('[data-slot="avatar-fallback"]') })
+      .first();
     await userMenuButton.click();
 
     await page.getByRole('menuitem', { name: /sign out/i }).click();

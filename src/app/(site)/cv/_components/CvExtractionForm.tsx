@@ -7,13 +7,7 @@ import { uploadCv } from '@/app/_actions/cvActions';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
 export function CvExtractionForm() {
@@ -78,7 +72,9 @@ export function CvExtractionForm() {
         <Card>
           <CardHeader>
             <CardTitle>Upload CV</CardTitle>
-            <CardDescription>PDF only, max 5 MB. Data is extracted automatically via AI.</CardDescription>
+            <CardDescription>
+              PDF only, max 5 MB. Data is extracted automatically via AI.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleUpload}>

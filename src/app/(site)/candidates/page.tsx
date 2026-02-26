@@ -9,13 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { requireAuth } from '@/lib/server/roleMiddleware';
@@ -45,9 +39,7 @@ export default async function CandidatesPage() {
         <CardHeader>
           <CardTitle>All Candidates</CardTitle>
           <CardDescription>
-            {candidates.length === 1
-              ? '1 candidate'
-              : `${candidates.length} candidates`}
+            {candidates.length === 1 ? '1 candidate' : `${candidates.length} candidates`}
           </CardDescription>
         </CardHeader>
         <CardContent>
